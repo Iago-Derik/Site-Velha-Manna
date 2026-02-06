@@ -1,16 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap');
 
 :root {
-    --primary-color: #FFF9C4; /* Pastel Yellow */
-    --primary-dark: #F0E8A0; /* Slightly darker for hover */
-    --bg-color: #FFFFFF;
-    --secondary-bg: #FAFAFA;
-    --text-color: #4A4A4A;
-    --light-text: #7A7A7A;
+    /* Base Palette (Cream/Pastel Yellow - Matching Logo Background) */
+    --primary-color: #FFE082; /* Pastel Amber/Yellow */
+    --primary-dark: #FFCA28; /* Slightly darker for hover */
+    --bg-color: #FFFDF5; /* Cream/Ivory Background */
+    --secondary-bg: #FFF9C4; /* Light Yellow/Cream Section Background */
+    --text-color: #5D4037; /* Warm Brown Text */
+    --light-text: #8D6E63; /* Lighter Brown Text */
     --border-radius: 16px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
     --spacing-unit: 1rem;
+}
+
+/* Feminine Theme Override */
+body.feminino-theme {
+    --primary-color: #F48FB1; /* Pastel Pink */
+    --primary-dark: #EC407A; /* Darker Pink */
+    --secondary-bg: #FCE4EC; /* Light Pink Background */
+}
+
+/* Masculine Theme Override */
+body.masculino-theme {
+    --primary-color: #81D4FA; /* Pastel Blue */
+    --primary-dark: #29B6F6; /* Darker Blue */
+    --secondary-bg: #E1F5FE; /* Light Blue Background */
+}
+
+.site-logo {
+    display: block;
+    margin: 1rem auto 2rem auto;
+    max-width: 300px;
+    width: 100%;
+    height: auto;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
