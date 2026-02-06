@@ -31,4 +31,14 @@ style.innerHTML = `
     }
 `;
 document.head.appendChild(style);
+
+// Mobile Menu Toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const navbar = document.querySelector('.navbar');
+
+if (menuToggle && navbar) {
+    menuToggle.addEventListener('click', () => {
+        navbar.classList.toggle('active');
+    });
+}
 });
