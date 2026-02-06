@@ -19,6 +19,8 @@ body.feminino-theme {
     --primary-color: #F48FB1; /* Pastel Pink */
     --primary-dark: #EC407A; /* Darker Pink */
     --secondary-bg: #FCE4EC; /* Light Pink Background */
+    --bg-color: #FFF0F5; /* Soft Lavender Blush Background */
+    --border-radius: 25px; /* Softer, rounder corners */
 }
 
 /* Masculine Theme Override */
@@ -26,6 +28,8 @@ body.masculino-theme {
     --primary-color: #81D4FA; /* Pastel Blue */
     --primary-dark: #29B6F6; /* Darker Blue */
     --secondary-bg: #E1F5FE; /* Light Blue Background */
+    --bg-color: #F0F8FF; /* Alice Blue Background */
+    --border-radius: 8px; /* Slightly squarer corners */
 }
 
 .site-logo {
@@ -91,6 +95,9 @@ ul { list-style: none; }
     top: 0;
     z-index: 1000;
     padding: 0.5rem 0;
+    /* Reset variables to default (Yellow) for the navbar, ignoring body theme */
+    --primary-color: #FFE082; 
+    --primary-dark: #FFCA28;
 }
 
 .navbar-container {
@@ -135,6 +142,22 @@ ul { list-style: none; }
 
 .nav-link:hover::after {
     width: 100%;
+}
+
+/* Feminino Link Specific Hover */
+.nav-link.nav-link-feminino:hover {
+    color: #EC407A; /* Pink Dark */
+}
+.nav-link.nav-link-feminino::after {
+    background-color: #F48FB1; /* Pink */
+}
+
+/* Masculino Link Specific Hover */
+.nav-link.nav-link-masculino:hover {
+    color: #29B6F6; /* Blue Dark */
+}
+.nav-link.nav-link-masculino::after {
+    background-color: #81D4FA; /* Blue */
 }
 
 .hamburger {
