@@ -51,7 +51,7 @@ body.masculino-theme {
   padding: 0;
   border: none;
   border-radius: 0;
-  -webkit-filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18))
+  -webkit-filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
 }
 
 * {
@@ -73,7 +73,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Great Vibes", cursive;
+  font-family: "Playfar display", sans;
   font-weight: 400;
   margin-bottom: 0.5rem;
   color: var(--text-color);
@@ -319,20 +319,24 @@ ul {
 
   .nav-menu {
     position: fixed;
-    left: -100%;
+    right: -100%; /* slide in from the right on mobile */
+    left: auto;
     top: 76px; /* Approx navbar height */
     gap: 0;
     flex-direction: column;
     background-color: var(--bg-color);
     width: 100%;
     text-align: center;
-    transition: 0.3s;
+    transition:
+      right 0.3s ease,
+      left 0.3s ease;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
     padding: 2rem 0;
   }
 
   .nav-menu.active {
-    left: 0;
+    right: 0;
+    left: auto;
   }
 
   .nav-item {
@@ -370,5 +374,29 @@ ul {
 
   .card-img-wrapper {
     height: 250px;
+  }
+}
+
+/* Desktop-only: place logo on the right without affecting mobile layout */
+@media (min-width: 901px) {
+  .navbar-container {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Re-order flex items so nav is left and logo moves to the right */
+  .logo-link {
+    order: 0;
+  }
+  .nav-menu {
+    order: 1;
+  }
+  .hamburger {
+    order: 2;
+  }
+
+  /* Ensure logo has no unexpected left offset on desktop */
+  .nav-logo {
+    margin-left: 0;
   }
 }
