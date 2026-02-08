@@ -52,7 +52,7 @@ body.masculino-theme {
   border: none;
   border-radius: 0;
   -webkit-filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
-    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
 }
 
 * {
@@ -406,85 +406,85 @@ ul {
 
 /* Banner Cards (Balloons) */
 .banner-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    height: 250px; /* Fixed height for consistency */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  height: 250px; /* Fixed height for consistency */
 }
 
 .banner-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
 }
 
 .banner-img {
-    flex: 1;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-    max-width: 40%; /* Image takes 40% width */
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  max-width: 40%; /* Image takes 40% width */
 }
 
 .banner-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
 .banner-card:hover .banner-img img {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .banner-content {
-    flex: 1.5;
-    padding: 2rem 3rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start; /* Left align text */
+  flex: 1.5;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; /* Left align text */
 }
 
 .banner-content h3 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    color: #333;
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
 }
 
 .banner-content p {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 1.5rem;
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .banner-card {
-        flex-direction: column;
-        height: auto;
-        text-align: center;
-    }
+  .banner-card {
+    flex-direction: column;
+    height: auto;
+    text-align: center;
+  }
 
-    .banner-img {
-        max-width: 100%;
-        width: 100%;
-        height: 200px;
-    }
+  .banner-img {
+    max-width: 100%;
+    width: 100%;
+    height: 200px;
+  }
 
-    .banner-content {
-        padding: 1.5rem;
-        align-items: center; /* Center text on mobile */
-    }
+  .banner-content {
+    padding: 1.5rem;
+    align-items: center; /* Center text on mobile */
+  }
 
-    .banner-content h3 {
-        font-size: 1.5rem;
-    }
+  .banner-content h3 {
+    font-size: 1.5rem;
+  }
 }
