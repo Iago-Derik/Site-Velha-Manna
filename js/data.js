@@ -91,3 +91,7 @@ const initialProducts = [
         section: "baloes"
     }
 ];
+
+const initialAdmins = [
+    { id: 1, username: 'admin', password: 'admin' }
+];

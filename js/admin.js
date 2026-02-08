@@ -13,6 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addProductBtn = document.getElementById('add-product-btn');
     const productForm = document.getElementById('product-form');
 
+    // Admin Management Elements
+    const manageAdminsBtn = document.getElementById('manage-admins-btn');
+    const adminModal = document.getElementById('admin-modal');
+    const closeAdminModalBtn = document.querySelector('.close-admin-modal');
+    const addAdminForm = document.getElementById('add-admin-form');
+    const adminList = document.getElementById('admin-list');
+    const adminError = document.getElementById('admin-error');
+
     // Check Login
     function checkLogin() {
         const isLoggedIn = sessionStorage.getItem('isLoggedIn');
@@ -34,7 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
 
-        if (user === 'admin' && pass === 'admin') {
+        const admins = getAdmins();
+        const validAdmin = admins.find(a => a.username === user && a.password === pass);
+
+        if (validAdmin) {
             sessionStorage.setItem('isLoggedIn', 'true');
             loginError.style.display = 'none';
             checkLogin();
@@ -100,6 +111,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter Change
     sectionFilter.addEventListener('change', renderAdminProducts);
 
+    // Admin Management Logic
+    function renderAdmins() {
+        adminList.innerHTML = '';
+        const admins = getAdmins();
+
+        admins.forEach(admin => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${admin.username}</td>
+                <td>
+                    <button class="action-btn delete-btn delete-admin-btn" data-id="${admin.id}" style="background-color: #ffcdd2; color: #c62828;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            adminList.appendChild(tr);
+        });
+
+        document.querySelectorAll('.delete-admin-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                if (getAdmins().length <= 1) {
+                    alert('Não é possível excluir o último administrador.');
+                    return;
+                }
+                if (confirm('Tem certeza que deseja excluir este administrador?')) {
+                   deleteAdmin(id);
+                   renderAdmins();
+                }
+            });
+        });
+    }
+
+    manageAdminsBtn.addEventListener('click', () => {
+        renderAdmins();
+        adminModal.classList.remove('hidden');
+    });
+
+    closeAdminModalBtn.addEventListener('click', () => {
+        adminModal.classList.add('hidden');
+    });
+
+    addAdminForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = document.getElementById('new-admin-user').value;
+        const pass = document.getElementById('new-admin-pass').value;
+
+        const success = addAdmin({ username: user, password: pass });
+
+        if (success) {
+            document.getElementById('new-admin-user').value = '';
+            document.getElementById('new-admin-pass').value = '';
+            adminError.style.display = 'none';
+            renderAdmins();
+        } else {
+            adminError.textContent = 'Usuário já existe.';
+            adminError.style.display = 'block';
+        }
+    });
+
     // Modal Logic
     function openModal(product = null) {
         const modalTitle = document.getElementById('modal-title');
@@ -132,6 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.classList.add('hidden');
+        }
+        if (e.target === adminModal) {
+            adminModal.classList.add('hidden');
         }
     });
 

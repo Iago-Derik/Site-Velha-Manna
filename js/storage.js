@@ -1,7 +1,8 @@
-const STORAGE_KEY = 'products_data';
+const PRODUCTS_KEY = 'products_data';
+const ADMINS_KEY = 'admins_data';
 
 function getProducts() {
-    const storedProducts = localStorage.getItem(STORAGE_KEY);
+    const storedProducts = localStorage.getItem(PRODUCTS_KEY);
     if (storedProducts) {
         return JSON.parse(storedProducts);
     }
@@ -15,7 +16,24 @@ function getProducts() {
 }
 
 function saveProducts(products) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+}
+
+function getAdmins() {
+    const storedAdmins = localStorage.getItem(ADMINS_KEY);
+    if (storedAdmins) {
+        return JSON.parse(storedAdmins);
+    }
+    // If no admins in storage, save the initial ones
+    if (typeof initialAdmins !== 'undefined') {
+        saveAdmins(initialAdmins);
+        return initialAdmins;
+    }
+    return [];
+}
+
+function saveAdmins(admins) {
+    localStorage.setItem(ADMINS_KEY, JSON.stringify(admins));
 }
 
 function addProduct(product) {
@@ -35,6 +53,34 @@ function updateProduct(id, updatedProduct) {
         // Merge existing fields with updates to avoid losing data if partial update
         products[index] = { ...products[index], ...updatedProduct };
         saveProducts(products);
+        return true;
+    }
+    return false;
+}
+
+function addAdmin(admin) {
+    const admins = getAdmins();
+    // Check if username already exists
+    if (admins.some(a => a.username === admin.username)) {
+        return false;
+    }
+    const newId = admins.length > 0 ? Math.max(...admins.map(a => a.id)) + 1 : 1;
+    admin.id = newId;
+    admins.push(admin);
+    saveAdmins(admins);
+    return true;
+}
+
+function deleteAdmin(id) {
+    let admins = getAdmins();
+    // Prevent deleting the last admin
+    if (admins.length <= 1) {
+        return false;
+    }
+    const initialLength = admins.length;
+    admins = admins.filter(a => a.id !== parseInt(id));
+    if (admins.length !== initialLength) {
+        saveAdmins(admins);
         return true;
     }
     return false;
