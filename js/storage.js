@@ -1,4 +1,41 @@
 const STORAGE_KEY = 'products_data';
+const USERS_KEY = 'admin_users';
+
+function getUsers() {
+    const storedUsers = localStorage.getItem(USERS_KEY);
+    if (storedUsers) {
+        return JSON.parse(storedUsers);
+    }
+    // Default admin user
+    const defaultUsers = [{ username: 'admin', password: 'admin' }];
+    saveUsers(defaultUsers);
+    return defaultUsers;
+}
+
+function saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function addUser(username, password) {
+    const users = getUsers();
+    if (users.some(u => u.username === username)) {
+        return false; // User already exists
+    }
+    users.push({ username, password });
+    saveUsers(users);
+    return true;
+}
+
+function deleteUser(username) {
+    let users = getUsers();
+    const initialLength = users.length;
+    users = users.filter(u => u.username !== username);
+    if (users.length !== initialLength) {
+        saveUsers(users);
+        return true;
+    }
+    return false;
+}
 
 function getProducts() {
     const storedProducts = localStorage.getItem(STORAGE_KEY);

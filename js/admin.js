@@ -13,6 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addProductBtn = document.getElementById('add-product-btn');
     const productForm = document.getElementById('product-form');
 
+    // Navigation & User Management Elements
+    const navProductsBtn = document.getElementById('nav-products');
+    const navUsersBtn = document.getElementById('nav-users');
+    const productsView = document.getElementById('products-view');
+    const usersView = document.getElementById('users-view');
+    const addUserForm = document.getElementById('add-user-form');
+    const userList = document.getElementById('user-list');
+
     // Check Login
     function checkLogin() {
         const isLoggedIn = sessionStorage.getItem('isLoggedIn');
@@ -34,8 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
 
-        if (user === 'admin' && pass === 'admin') {
+        const users = getUsers();
+        const validUser = users.find(u => u.username === user && u.password === pass);
+
+        if (validUser) {
             sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('currentUser', user);
             loginError.style.display = 'none';
             checkLogin();
         } else {
@@ -144,21 +156,97 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const id = document.getElementById('product-id').value;
-        const product = {
+        const fileInput = document.getElementById('product-image-file');
+        const imageInput = document.getElementById('product-image');
+
+        const productData = {
             name: document.getElementById('product-name').value,
-            image: document.getElementById('product-image').value,
             description: document.getElementById('product-desc').value,
             section: document.getElementById('product-section').value
         };
 
-        if (id) {
-            updateProduct(id, product);
-        } else {
-            addProduct(product);
-        }
+        const saveProduct = (imageUrl) => {
+            productData.image = imageUrl;
 
-        modal.classList.add('hidden');
-        renderAdminProducts();
+            if (id) {
+                updateProduct(id, productData);
+            } else {
+                addProduct(productData);
+            }
+
+            modal.classList.add('hidden');
+            renderAdminProducts();
+        };
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                saveProduct(e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            saveProduct(imageInput.value);
+        }
+    });
+
+    // Navigation Logic
+    navProductsBtn.addEventListener('click', () => {
+        productsView.classList.remove('hidden');
+        usersView.classList.add('hidden');
+        navProductsBtn.style.backgroundColor = 'var(--primary-color)';
+        navUsersBtn.style.backgroundColor = '#ddd';
+    });
+
+    navUsersBtn.addEventListener('click', () => {
+        productsView.classList.add('hidden');
+        usersView.classList.remove('hidden');
+        navUsersBtn.style.backgroundColor = 'var(--primary-color)';
+        navProductsBtn.style.backgroundColor = '#ddd';
+        renderUsers();
+    });
+
+    // User Management Logic
+    function renderUsers() {
+        const users = getUsers();
+        userList.innerHTML = '';
+        const currentUser = sessionStorage.getItem('currentUser');
+
+        users.forEach(u => {
+            const tr = document.createElement('tr');
+            const isSelf = u.username === currentUser;
+
+            tr.innerHTML = `
+                <td>${u.username}</td>
+                <td>
+                    ${!isSelf ? `<button class="action-btn delete-btn user-delete-btn" data-username="${u.username}"><i class="fas fa-trash"></i> Excluir</button>` : '<span style="color: #999; font-size: 0.9rem;">(Você)</span>'}
+                </td>
+            `;
+            userList.appendChild(tr);
+        });
+
+        document.querySelectorAll('.user-delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const username = btn.getAttribute('data-username');
+                if(confirm(`Tem certeza que deseja excluir o usuário "${username}"?`)) {
+                    deleteUser(username);
+                    renderUsers();
+                }
+            });
+        });
+    }
+
+    addUserForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('new-username').value;
+        const password = document.getElementById('new-password').value;
+
+        if (addUser(username, password)) {
+            alert('Usuário adicionado com sucesso!');
+            addUserForm.reset();
+            renderUsers();
+        } else {
+            alert('Erro: Usuário já existe.');
+        }
     });
 
     // Initialize
