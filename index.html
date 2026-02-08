@@ -22,6 +22,8 @@
                 <li class="nav-item"><a href="feminino.html" class="nav-link nav-link-feminino">Feminino</a></li>
                 <li class="nav-item"><a href="masculino.html" class="nav-link nav-link-masculino">Masculino</a></li>
                 <li class="nav-item"><a href="index.html#baloes" class="nav-link">Balões</a></li>
+                <li class="nav-item"><a href="index.html#lembrancinhas" class="nav-link">Lembrancinhas</a></li>
+                <li class="nav-item"><a href="index.html#amigurumis" class="nav-link">Amigurumis</a></li>
                 <li class="nav-item"><a href="index.html#portfolio" class="nav-link">Portfólio</a></li>
             </ul>
             <div class="hamburger">
@@ -53,40 +55,8 @@
                 <div class="section-title">
                     <span>Cursos!</span>
                 </div>
-                <div class="grid">
-                    <!-- Course 1 -->
-                    <div class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://placehold.co/400x300/FFF9C4/333333?text=Curso+Básico" alt="Curso Básico">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Curso Básico de Crochê</h3>
-                            <p class="card-text">Aprenda os pontos fundamentais e comece a criar suas primeiras peças.</p>
-                            <a href="javascript:void(0)" class="btn btn-secondary card-btn" onclick="sendWhatsAppMessage('Curso Básico de Crochê', 'curso')">Quero saber mais</a>
-                        </div>
-                    </div>
-                    <!-- Course 2 -->
-                    <div class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://placehold.co/400x300/FFF9C4/333333?text=Amigurumi" alt="Curso Amigurumi">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Mestre do Amigurumi</h3>
-                            <p class="card-text">Técnicas avançadas para criar bonecos perfeitos e cheios de detalhes.</p>
-                            <a href="javascript:void(0)" class="btn btn-secondary card-btn" onclick="sendWhatsAppMessage('Curso Mestre do Amigurumi', 'curso')">Quero saber mais</a>
-                        </div>
-                    </div>
-                    <!-- Course 3 -->
-                    <div class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://placehold.co/400x300/FFF9C4/333333?text=Macramê" alt="Curso Macramê">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Macramê para Decoração</h3>
-                            <p class="card-text">Crie painéis e suportes de plantas incríveis para decorar sua casa.</p>
-                            <a href="javascript:void(0)" class="btn btn-secondary card-btn" onclick="sendWhatsAppMessage('Curso Macramê para Decoração', 'curso')">Quero saber mais</a>
-                        </div>
-                    </div>
+                <div id="cursos-container" class="grid">
+                    <!-- Products will be loaded dynamically -->
                 </div>
             </div>
         </section>
@@ -125,43 +95,32 @@
                 <div class="section-title">
                     <span>Balões Artesanais</span>
                 </div>
-                <div class="grid">
-                    <!-- Balão 1 -->
-                    <div class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://placehold.co/400x400/FFF9C4/333333?text=Balao+Sonho" alt="Balão Sonho">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Balão Sonho</h3>
-                            <a href="javascript:void(0)" class="btn card-btn" onclick="sendWhatsAppMessage('Balão Sonho', 'balao')">
-                                <i class="fab fa-whatsapp"></i> Encomendar
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Balão 2 -->
-                    <div class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://placehold.co/400x400/FFF9C4/333333?text=Balao+Estrela" alt="Balão Estrela">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Balão Estrela</h3>
-                            <a href="javascript:void(0)" class="btn card-btn" onclick="sendWhatsAppMessage('Balão Estrela', 'balao')">
-                                <i class="fab fa-whatsapp"></i> Encomendar
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Balão 3 -->
-                    <div class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://placehold.co/400x400/FFF9C4/333333?text=Balao+Nuvem" alt="Balão Nuvem">
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">Balão Nuvem</h3>
-                            <a href="javascript:void(0)" class="btn card-btn" onclick="sendWhatsAppMessage('Balão Nuvem', 'balao')">
-                                <i class="fab fa-whatsapp"></i> Encomendar
-                            </a>
-                        </div>
-                    </div>
+                <div id="baloes-container" class="grid">
+                    <!-- Products will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Lembrancinhas Section -->
+        <section id="lembrancinhas" class="section section-bg">
+            <div class="container">
+                <div class="section-title">
+                    <span>Lembrancinhas</span>
+                </div>
+                <div id="lembrancinhas-container" class="grid">
+                     <!-- Products will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Amigurumis Section -->
+        <section id="amigurumis" class="section">
+            <div class="container">
+                <div class="section-title">
+                    <span>Amigurumis</span>
+                </div>
+                <div id="amigurumis-container" class="grid">
+                     <!-- Products will be loaded dynamically -->
                 </div>
             </div>
         </section>
@@ -186,6 +145,17 @@
         <p style="color: var(--light-text); font-size: 0.9rem;">&copy; 2024 Artesanato & Amor. Feito com carinho.</p>
     </footer>
 
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/render.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts('cursos', 'cursos-container');
+            renderProducts('baloes', 'baloes-container');
+            renderProducts('lembrancinhas', 'lembrancinhas-container');
+            renderProducts('amigurumis', 'amigurumis-container');
+        });
+    </script>
     <script src="js/script.js"></script>
 </body>
 

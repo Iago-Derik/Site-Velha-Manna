@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Artesanato & Amor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Admin specific styles */
+        .admin-container { max-width: 900px; margin: 2rem auto; padding: 2rem; background: white; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
+        .product-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        .product-table th, .product-table td { padding: 1rem; border-bottom: 1px solid #eee; text-align: left; }
+        .product-table img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+        .action-btn { padding: 0.5rem 1rem; margin-right: 0.5rem; font-size: 0.9rem; border-radius: 8px; cursor: pointer; border: none; }
+        .edit-btn { background: var(--primary-color); color: #333; }
+        .delete-btn { background: #ffcdd2; color: #c62828; }
+        .hidden { display: none !important; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: white; padding: 2rem; border-radius: var(--border-radius); width: 90%; max-width: 500px; }
+        .close-modal { float: right; cursor: pointer; font-size: 1.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="logo-link">
+                <img src="img/logo.png" alt="Velha Manna Tricotins" class="nav-logo">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Voltar ao Site</a></li>
+                <li class="nav-item" id="logout-btn" style="display: none;"><a href="#" class="nav-link">Sair</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 4rem;">
+
+        <!-- Login Section -->
+        <div id="login-section" class="admin-container" style="max-width: 400px; text-align: center;">
+            <h2 style="margin-bottom: 2rem;">Login Admin</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Usuário" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Senha" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+            <p id="login-error" style="color: red; margin-top: 1rem; display: none;">Credenciais inválidas.</p>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="hidden">
+            <div class="admin-container">
+                <h2>Gerenciar Produtos</h2>
+                <button id="add-product-btn" class="btn" style="margin: 1rem 0;"><i class="fas fa-plus"></i> Novo Produto</button>
+
+                <div style="margin-bottom: 1rem;">
+                    <label for="section-filter">Filtrar por Seção:</label>
+                    <select id="section-filter" style="padding: 0.5rem; border-radius: 8px; border: 1px solid #ddd;">
+                        <option value="all">Todas</option>
+                        <option value="cursos">Cursos</option>
+                        <option value="baloes">Balões</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                        <option value="lembrancinhas">Lembrancinhas</option>
+                        <option value="amigurumis">Amigurumis</option>
+                    </select>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>Imagem</th>
+                                <th>Nome</th>
+                                <th>Seção</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-list">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal (Add/Edit) -->
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title" style="margin-bottom: 1.5rem;">Adicionar Produto</h2>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="product-name">Nome do Produto</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">URL da Imagem</label>
+                    <input type="url" id="product-image" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label for="product-desc">Descrição</label>
+                    <textarea id="product-desc" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-section">Seção</label>
+                    <select id="product-section" required>
+                        <option value="cursos">Cursos</option>
+                        <option value="baloes">Balões</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                        <option value="lembrancinhas">Lembrancinhas</option>
+                        <option value="amigurumis">Amigurumis</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

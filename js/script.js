@@ -14,8 +14,8 @@ function sendWhatsAppMessage(itemName, type) {
     window.open(url, '_blank');
 }
 
-// Add simple animation on scroll
-document.addEventListener('DOMContentLoaded', () => {
+// Global function to re-init animations for new content
+window.initAnimations = function() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -25,12 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.card, .section-title').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
+        // Only observe if not already visible/observed (to avoid resetting styles unnecessarily)
+        if (!el.classList.contains('visible') && !el.classList.contains('observing')) {
+             el.style.opacity = '0';
+             el.style.transform = 'translateY(20px)';
+             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+             observer.observe(el);
+             el.classList.add('observing'); // Mark as observed
+        }
     });
+};
 
+document.addEventListener('DOMContentLoaded', () => {
     // Inject styles for animation
     const style = document.createElement('style');
     style.innerHTML = `
@@ -40,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // Initial animation setup
+    window.initAnimations();
 
     // Navbar Toggle Logic
     const hamburger = document.querySelector(".hamburger");
