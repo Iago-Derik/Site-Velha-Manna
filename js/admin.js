@@ -257,8 +257,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('bg-cursos').value = config.banners?.cursos || '';
     }
 
+    // Helper to read file as Data URL
+    const readFileAsDataURL = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    };
+
     if (saveSettingsForm) {
-        saveSettingsForm.addEventListener('submit', (e) => {
+        saveSettingsForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const config = {
@@ -272,6 +282,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     cursos: document.getElementById('bg-cursos').value
                 }
             };
+
+            const checkFile = async (fileId, configKey, subKey = null) => {
+                const fileInput = document.getElementById(fileId);
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    try {
+                        const dataUrl = await readFileAsDataURL(fileInput.files[0]);
+                        if (subKey) {
+                            config[configKey][subKey] = dataUrl;
+                        } else {
+                            config[configKey] = dataUrl;
+                        }
+                    } catch (err) {
+                        console.error(`Error reading file ${fileId}:`, err);
+                    }
+                }
+            };
+
+            await Promise.all([
+                checkFile('site-logo-file', 'logoUrl'),
+                checkFile('bg-page-file', 'pageBgUrl'),
+                checkFile('bg-feminino-file', 'banners', 'feminino'),
+                checkFile('bg-masculino-file', 'banners', 'masculino'),
+                checkFile('bg-baloes-file', 'banners', 'baloes'),
+                checkFile('bg-lembrancinhas-file', 'banners', 'lembrancinhas'),
+                checkFile('bg-cursos-file', 'banners', 'cursos')
+            ]);
 
             saveSiteConfig(config);
             alert('Configurações salvas com sucesso!');

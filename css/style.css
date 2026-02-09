@@ -173,7 +173,7 @@ ul {
 .card-img-wrapper {
   width: 100%;
   height: auto;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background-color: #f0f0f0;
   position: relative;
