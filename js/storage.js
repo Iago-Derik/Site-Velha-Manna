@@ -1,5 +1,18 @@
 const STORAGE_KEY = 'products_data';
 const USERS_KEY = 'admin_users';
+const CONFIG_KEY = 'site_config';
+
+function getSiteConfig() {
+    const storedConfig = localStorage.getItem(CONFIG_KEY);
+    if (storedConfig) {
+        return JSON.parse(storedConfig);
+    }
+    return {};
+}
+
+function saveSiteConfig(config) {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+}
 
 function getUsers() {
     const storedUsers = localStorage.getItem(USERS_KEY);
