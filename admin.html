@@ -14,13 +14,13 @@
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
         .product-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
         .product-table th, .product-table td { padding: 1rem; border-bottom: 1px solid #eee; text-align: left; }
-        .product-table img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+        .product-table img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
         .action-btn { padding: 0.5rem 1rem; margin-right: 0.5rem; font-size: 0.9rem; border-radius: 8px; cursor: pointer; border: none; }
         .edit-btn { background: var(--primary-color); color: #333; }
         .delete-btn { background: #ffcdd2; color: #c62828; }
         .hidden { display: none !important; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-content { background: white; padding: 2rem; border-radius: var(--border-radius); width: 90%; max-width: 500px; }
+        .modal-content { background: white; padding: 2rem; border-radius: var(--border-radius); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .close-modal { float: right; cursor: pointer; font-size: 1.5rem; }
 
         .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
@@ -148,32 +148,39 @@
                     <form id="settings-form">
                         <div class="form-group">
                             <label>URL da Logo</label>
-                            <input type="text" id="site-logo-url" placeholder="https://...">
+                            <input type="file" id="site-logo-file" accept="image/*" style="margin-bottom: 0.5rem;">
+                            <input type="text" id="site-logo-url" placeholder="Ou cole a URL aqui (https://...)">
                         </div>
                         <div class="form-group">
                             <label>Fundo da Página (URL de Imagem)</label>
-                            <input type="text" id="bg-page-url" placeholder="https://...">
+                            <input type="file" id="bg-page-file" accept="image/*" style="margin-bottom: 0.5rem;">
+                            <input type="text" id="bg-page-url" placeholder="Ou cole a URL aqui (https://...)">
                         </div>
 
                         <h4 style="margin: 1.5rem 0 0.5rem;">Fundos dos Banners (Linear Gradient ou URL)</h4>
                         <div class="form-group">
                             <label>Banner Meninas</label>
+                            <input type="file" id="bg-feminino-file" accept="image/*" style="margin-bottom: 0.5rem;">
                             <input type="text" id="bg-feminino" placeholder="linear-gradient(...) ou url(...)">
                         </div>
                         <div class="form-group">
                             <label>Banner Meninos</label>
+                            <input type="file" id="bg-masculino-file" accept="image/*" style="margin-bottom: 0.5rem;">
                             <input type="text" id="bg-masculino" placeholder="linear-gradient(...) ou url(...)">
                         </div>
                         <div class="form-group">
                             <label>Banner Balões</label>
+                            <input type="file" id="bg-baloes-file" accept="image/*" style="margin-bottom: 0.5rem;">
                             <input type="text" id="bg-baloes" placeholder="linear-gradient(...) ou url(...)">
                         </div>
                         <div class="form-group">
                             <label>Banner Lembrancinhas</label>
+                            <input type="file" id="bg-lembrancinhas-file" accept="image/*" style="margin-bottom: 0.5rem;">
                             <input type="text" id="bg-lembrancinhas" placeholder="linear-gradient(...) ou url(...)">
                         </div>
                         <div class="form-group">
                             <label>Banner Cursos</label>
+                            <input type="file" id="bg-cursos-file" accept="image/*" style="margin-bottom: 0.5rem;">
                             <input type="text" id="bg-cursos" placeholder="linear-gradient(...) ou url(...)">
                         </div>
 
