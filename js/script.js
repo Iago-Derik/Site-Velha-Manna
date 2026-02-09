@@ -56,6 +56,41 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial animation setup
   window.initAnimations();
 
+  // Load Site Config
+  if (typeof getSiteConfig === 'function') {
+      const config = getSiteConfig();
+      if (config.logoUrl) {
+          document.querySelectorAll('.nav-logo, .hero-logo, .site-logo').forEach(img => {
+              img.src = config.logoUrl;
+          });
+      }
+      if (config.pageBgUrl) {
+          document.body.style.backgroundImage = `url('${config.pageBgUrl}')`;
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundAttachment = 'fixed';
+      }
+      if (config.banners) {
+          const setBannerBg = (id, bg) => {
+              const el = document.getElementById(id);
+              if (el && bg) {
+                  // Check if it looks like a full CSS value (gradient/url) or just a raw URL
+                  if (bg.includes('gradient') || bg.includes('url(')) {
+                      el.style.background = bg;
+                  } else {
+                       el.style.background = `url('${bg}')`;
+                       el.style.backgroundSize = 'cover';
+                       el.style.backgroundPosition = 'center';
+                  }
+              }
+          };
+          setBannerBg('banner-feminino', config.banners.feminino);
+          setBannerBg('banner-masculino', config.banners.masculino);
+          setBannerBg('banner-baloes', config.banners.baloes);
+          setBannerBg('banner-lembrancinhas', config.banners.lembrancinhas);
+          setBannerBg('banner-cursos', config.banners.cursos);
+      }
+  }
+
   // (removed automatic active-link assignment per user request)
 
   // Navbar Toggle Logic

@@ -16,10 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigation & User Management Elements
     const navProductsBtn = document.getElementById('nav-products');
     const navUsersBtn = document.getElementById('nav-users');
+    const navSettingsBtn = document.getElementById('nav-settings');
     const productsView = document.getElementById('products-view');
     const usersView = document.getElementById('users-view');
+    const settingsView = document.getElementById('settings-view');
     const addUserForm = document.getElementById('add-user-form');
     const userList = document.getElementById('user-list');
+    const saveSettingsForm = document.getElementById('settings-form');
 
     // Check Login
     function checkLogin() {
@@ -120,6 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageInput = document.getElementById('product-image');
         const descInput = document.getElementById('product-desc');
         const sectionInput = document.getElementById('product-section');
+        const priceInputContainer = document.getElementById('product-price-container');
+        const priceInput = document.getElementById('product-price');
+        const boldDescInput = document.getElementById('product-bold-desc');
+
+        // Helper to toggle price visibility
+        const togglePrice = (section) => {
+            if (section === 'cursos') {
+                priceInputContainer.classList.remove('hidden');
+            } else {
+                priceInputContainer.classList.add('hidden');
+            }
+        };
 
         if (product) {
             modalTitle.textContent = 'Editar Produto';
@@ -128,11 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
             imageInput.value = product.image;
             descInput.value = product.description || '';
             sectionInput.value = product.section;
+            priceInput.value = product.price || '';
+            boldDescInput.checked = product.isBold || false;
+            togglePrice(product.section);
         } else {
             modalTitle.textContent = 'Adicionar Produto';
             idInput.value = '';
             productForm.reset();
+            togglePrice(sectionInput.value);
         }
+
+        // Section change listener for price visibility
+        sectionInput.onchange = () => togglePrice(sectionInput.value);
 
         modal.classList.remove('hidden');
     }
@@ -162,7 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const productData = {
             name: document.getElementById('product-name').value,
             description: document.getElementById('product-desc').value,
-            section: document.getElementById('product-section').value
+            section: document.getElementById('product-section').value,
+            price: document.getElementById('product-price').value,
+            isBold: document.getElementById('product-bold-desc').checked
         };
 
         const saveProduct = (imageUrl) => {
@@ -193,17 +217,66 @@ document.addEventListener('DOMContentLoaded', () => {
     navProductsBtn.addEventListener('click', () => {
         productsView.classList.remove('hidden');
         usersView.classList.add('hidden');
+        settingsView.classList.add('hidden');
         navProductsBtn.style.backgroundColor = 'var(--primary-color)';
         navUsersBtn.style.backgroundColor = '#ddd';
+        navSettingsBtn.style.backgroundColor = '#ddd';
     });
 
     navUsersBtn.addEventListener('click', () => {
         productsView.classList.add('hidden');
         usersView.classList.remove('hidden');
+        settingsView.classList.add('hidden');
         navUsersBtn.style.backgroundColor = 'var(--primary-color)';
         navProductsBtn.style.backgroundColor = '#ddd';
+        navSettingsBtn.style.backgroundColor = '#ddd';
         renderUsers();
     });
+
+    navSettingsBtn.addEventListener('click', () => {
+        productsView.classList.add('hidden');
+        usersView.classList.add('hidden');
+        settingsView.classList.remove('hidden');
+        navSettingsBtn.style.backgroundColor = 'var(--primary-color)';
+        navProductsBtn.style.backgroundColor = '#ddd';
+        navUsersBtn.style.backgroundColor = '#ddd';
+        renderSettings();
+    });
+
+    // Settings Logic
+    function renderSettings() {
+        const config = getSiteConfig();
+
+        document.getElementById('site-logo-url').value = config.logoUrl || '';
+        document.getElementById('bg-page-url').value = config.pageBgUrl || '';
+
+        document.getElementById('bg-feminino').value = config.banners?.feminino || '';
+        document.getElementById('bg-masculino').value = config.banners?.masculino || '';
+        document.getElementById('bg-baloes').value = config.banners?.baloes || '';
+        document.getElementById('bg-lembrancinhas').value = config.banners?.lembrancinhas || '';
+        document.getElementById('bg-cursos').value = config.banners?.cursos || '';
+    }
+
+    if (saveSettingsForm) {
+        saveSettingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const config = {
+                logoUrl: document.getElementById('site-logo-url').value,
+                pageBgUrl: document.getElementById('bg-page-url').value,
+                banners: {
+                    feminino: document.getElementById('bg-feminino').value,
+                    masculino: document.getElementById('bg-masculino').value,
+                    baloes: document.getElementById('bg-baloes').value,
+                    lembrancinhas: document.getElementById('bg-lembrancinhas').value,
+                    cursos: document.getElementById('bg-cursos').value
+                }
+            };
+
+            saveSiteConfig(config);
+            alert('Configurações salvas com sucesso!');
+        });
+    }
 
     // User Management Logic
     function renderUsers() {

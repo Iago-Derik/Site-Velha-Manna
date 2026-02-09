@@ -28,10 +28,24 @@ function renderProducts(section, containerId) {
 
         content.appendChild(title);
 
+        if (product.price) {
+            const price = document.createElement('p');
+            price.style.color = '#333';
+            price.style.fontWeight = 'bold';
+            price.style.marginBottom = '0.5rem';
+            price.style.fontSize = '1.1rem';
+            price.textContent = product.price;
+            content.appendChild(price);
+        }
+
         if (product.description) {
             const desc = document.createElement('p');
             desc.className = 'card-text';
             desc.textContent = product.description;
+            if (product.isBold) {
+                desc.style.fontWeight = 'bold';
+                desc.style.color = '#333';
+            }
             content.appendChild(desc);
         }
 

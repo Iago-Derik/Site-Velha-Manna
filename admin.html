@@ -22,6 +22,16 @@
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
         .modal-content { background: white; padding: 2rem; border-radius: var(--border-radius); width: 90%; max-width: 500px; }
         .close-modal { float: right; cursor: pointer; font-size: 1.5rem; }
+
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
+        .dashboard-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .dashboard-nav button { margin-right: 0; }
+
+        @media (max-width: 600px) {
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .dashboard-nav { width: 100%; }
+            .dashboard-nav button { flex: 1; padding: 10px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -57,11 +67,12 @@
         <!-- Dashboard Section -->
         <div id="dashboard-section" class="hidden">
             <div class="admin-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2 id="dashboard-title">Gerenciar Produtos</h2>
-                    <div>
-                        <button id="nav-products" class="btn" style="margin-right: 0.5rem; background-color: var(--primary-color);">Produtos</button>
+                <div class="dashboard-header">
+                    <h2 id="dashboard-title">Painel Admin</h2>
+                    <div class="dashboard-nav">
+                        <button id="nav-products" class="btn" style="background-color: var(--primary-color);">Produtos</button>
                         <button id="nav-users" class="btn" style="background-color: #ddd; color: #333;">Usuários</button>
+                        <button id="nav-settings" class="btn" style="background-color: #ddd; color: #333;">Configurações</button>
                     </div>
                 </div>
 
@@ -130,6 +141,45 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Settings View -->
+                <div id="settings-view" class="hidden">
+                    <h3 style="margin-bottom: 1rem;">Configurações do Site</h3>
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label>URL da Logo</label>
+                            <input type="text" id="site-logo-url" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>Fundo da Página (URL de Imagem)</label>
+                            <input type="text" id="bg-page-url" placeholder="https://...">
+                        </div>
+
+                        <h4 style="margin: 1.5rem 0 0.5rem;">Fundos dos Banners (Linear Gradient ou URL)</h4>
+                        <div class="form-group">
+                            <label>Banner Meninas</label>
+                            <input type="text" id="bg-feminino" placeholder="linear-gradient(...) ou url(...)">
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Meninos</label>
+                            <input type="text" id="bg-masculino" placeholder="linear-gradient(...) ou url(...)">
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Balões</label>
+                            <input type="text" id="bg-baloes" placeholder="linear-gradient(...) ou url(...)">
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Lembrancinhas</label>
+                            <input type="text" id="bg-lembrancinhas" placeholder="linear-gradient(...) ou url(...)">
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Cursos</label>
+                            <input type="text" id="bg-cursos" placeholder="linear-gradient(...) ou url(...)">
+                        </div>
+
+                        <button type="submit" class="btn">Salvar Configurações</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -154,6 +204,15 @@
                 <div class="form-group">
                     <label for="product-desc">Descrição</label>
                     <textarea id="product-desc" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="product-bold-desc"> Destacar descrição em negrito
+                    </label>
+                </div>
+                <div class="form-group hidden" id="product-price-container">
+                    <label for="product-price">Preço (apenas para Cursos)</label>
+                    <input type="text" id="product-price" placeholder="R$ 0,00">
                 </div>
                 <div class="form-group">
                     <label for="product-section">Seção</label>
