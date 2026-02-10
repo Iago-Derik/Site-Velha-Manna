@@ -519,12 +519,12 @@ body.masculino-theme .section-title span {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .section {
-    padding: 3rem 0 !important;
+    padding: 2rem 0 !important;
   }
 
   .section-title {
-    font-size: 2rem !important;
-    margin-bottom: 1.5rem;
+    font-size: 1.75rem !important;
+    margin-bottom: 1rem;
   }
 
   #hero {
@@ -927,7 +927,7 @@ body.masculino-theme .search-bar {
     min-width: 0;
   }
   .collection-header h3 {
-    font-size: 1.4rem;
+    font-size: 1rem;
     flex-direction: column;
   }
 }
