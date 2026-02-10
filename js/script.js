@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load Site Config
   if (typeof getSiteConfig === 'function') {
       const config = getSiteConfig();
-      if (config.logoUrl) {
+      if (config && config.logoUrl && config.logoUrl.trim() !== '') {
           document.querySelectorAll('.nav-logo, .hero-logo, .site-logo').forEach(img => {
               img.src = config.logoUrl;
           });

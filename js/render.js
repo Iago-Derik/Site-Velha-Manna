@@ -1,10 +1,43 @@
-function renderProducts(section, containerId) {
-    const products = getProducts().filter(p => p.section === section);
+const PRICE_THRESHOLD = 150;
+
+function parsePrice(priceStr) {
+    if (!priceStr) return 0;
+    // Remove 'R$', spaces, and replace comma with dot
+    const cleanStr = priceStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+    return parseFloat(cleanStr) || 0;
+}
+
+function renderProducts(section, containerId, filters = {}) {
+    let products = getProducts().filter(p => p.section === section);
     const container = document.getElementById(containerId);
 
     if (!container) return;
 
+    // Apply Search Filter
+    if (filters.search) {
+        const term = filters.search.toLowerCase();
+        products = products.filter(p => p.name.toLowerCase().includes(term));
+    }
+
+    // Apply Collection Filter (Price based)
+    if (filters.collection && filters.collection !== 'all') {
+        products = products.filter(p => {
+            const price = parsePrice(p.price);
+            if (filters.collection === 'essencia') {
+                return price < PRICE_THRESHOLD;
+            } else if (filters.collection === 'encanto') {
+                return price >= PRICE_THRESHOLD;
+            }
+            return true;
+        });
+    }
+
     container.innerHTML = '';
+
+    if (products.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; width: 100%; padding: 2rem;">Nenhum produto encontrado para esta seleção.</p>';
+        return;
+    }
 
     products.forEach(product => {
         const card = document.createElement('div');

@@ -39,6 +39,30 @@
                 <div class="section-title">
                     <span>Modelo Masculino</span>
                 </div>
+
+                <div class="collection-selector-container">
+                    <div class="collection-header">
+                        <h3>Cada peça conta uma história, escolha a coleção que melhor traduz a sua <i class="fas fa-heart" style="color: #29b6f6;"></i></h3>
+                    </div>
+                    <div class="collection-selector">
+                        <div class="collection-btn essencia" id="btn-essencia">
+                            <small>Coleção</small>
+                            <h4>Essência</h4>
+                            <p>Detalhes que encantam com simplicidade.</p>
+                        </div>
+                        <div class="collection-btn encanto" id="btn-encanto">
+                            <small>Coleção</small>
+                            <h4>Encanto Profundo</h4>
+                            <p>Exclusividade em cada ponto.</p>
+                        </div>
+                    </div>
+
+                    <div class="search-bar-container">
+                        <input type="text" id="product-search" class="search-bar" placeholder="Pesquisar nesta seção...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
                 <div id="masculino-container" class="grid">
                     <!-- Products will be loaded dynamically -->
                 </div>
@@ -59,7 +83,53 @@
     <script src="js/render.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            renderProducts('masculino', 'masculino-container');
+            const containerId = 'masculino-container';
+            const section = 'masculino';
+            let currentCollection = 'all';
+            let currentSearch = '';
+
+            const btnEssencia = document.getElementById('btn-essencia');
+            const btnEncanto = document.getElementById('btn-encanto');
+            const searchInput = document.getElementById('product-search');
+
+            function updateFilters() {
+                renderProducts(section, containerId, {
+                    collection: currentCollection,
+                    search: currentSearch
+                });
+            }
+
+            btnEssencia.addEventListener('click', () => {
+                if (currentCollection === 'essencia') {
+                    currentCollection = 'all';
+                    btnEssencia.classList.remove('active');
+                } else {
+                    currentCollection = 'essencia';
+                    btnEssencia.classList.add('active');
+                    btnEncanto.classList.remove('active');
+                }
+                updateFilters();
+            });
+
+            btnEncanto.addEventListener('click', () => {
+                if (currentCollection === 'encanto') {
+                    currentCollection = 'all';
+                    btnEncanto.classList.remove('active');
+                } else {
+                    currentCollection = 'encanto';
+                    btnEncanto.classList.add('active');
+                    btnEssencia.classList.remove('active');
+                }
+                updateFilters();
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                updateFilters();
+            });
+
+            // Initial render
+            renderProducts(section, containerId);
         });
     </script>
     <script src="js/script.js"></script>

@@ -127,15 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const priceInput = document.getElementById('product-price');
         const boldDescInput = document.getElementById('product-bold-desc');
 
-        // Helper to toggle price visibility
-        const togglePrice = (section) => {
-            if (section === 'cursos') {
-                priceInputContainer.classList.remove('hidden');
-            } else {
-                priceInputContainer.classList.add('hidden');
-            }
-        };
-
         if (product) {
             modalTitle.textContent = 'Editar Produto';
             idInput.value = product.id;
@@ -145,16 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sectionInput.value = product.section;
             priceInput.value = product.price || '';
             boldDescInput.checked = product.isBold || false;
-            togglePrice(product.section);
         } else {
             modalTitle.textContent = 'Adicionar Produto';
             idInput.value = '';
             productForm.reset();
-            togglePrice(sectionInput.value);
         }
-
-        // Section change listener for price visibility
-        sectionInput.onchange = () => togglePrice(sectionInput.value);
 
         modal.classList.remove('hidden');
     }
@@ -309,8 +295,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkFile('bg-cursos-file', 'banners', 'cursos')
             ]);
 
-            saveSiteConfig(config);
-            alert('Configurações salvas com sucesso!');
+            try {
+                saveSiteConfig(config);
+                alert('Configurações salvas com sucesso!');
+            } catch (error) {
+                console.error('Erro ao salvar configurações:', error);
+                if (error.name === 'QuotaExceededError' || error.code === 22) {
+                     alert('Erro: O tamanho das imagens excedeu o limite do armazenamento. Tente usar imagens menores ou URLs externas.');
+                } else {
+                     alert('Erro ao salvar configurações. Consulte o console para mais detalhes.');
+                }
+            }
         });
     }
 
