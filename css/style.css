@@ -13,6 +13,12 @@
   font-display: swap;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
 :root {
   /* Base Palette (Cream/Pastel Yellow - Matching Logo Background) */
   --primary-color: #ffe082; /* Pastel Amber/Yellow */
@@ -934,4 +940,15 @@ footer {
 /* Slightly stronger weight for the hero title to match admin heading */
 #hero h2 {
   font-weight: 600;
+}
+
+/* Scroll Animation Classes */
+.scroll-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.scroll-visible {
+  opacity: 1;
+  transform: translateY(0);
 }

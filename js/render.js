@@ -110,14 +110,9 @@ function renderProducts(section, containerId, filters = {}) {
       icon.style.marginRight = "8px";
       btn.appendChild(icon);
 
-      if (section === "baloes") {
-        btn.appendChild(document.createTextNode(" Encomendar"));
-        btn.onclick = () => sendWhatsAppMessage(product.name, "balao");
-      } else {
-        btn.appendChild(document.createTextNode(" Pedir no WhatsApp"));
-        // Pass the section as type, sendWhatsAppMessage handles non-curso as generic order
-        btn.onclick = () => sendWhatsAppMessage(product.name, section);
-      }
+      btn.appendChild(document.createTextNode(" Pedir no WhatsApp"));
+      // Pass the section as type, sendWhatsAppMessage handles non-curso as generic order
+      btn.onclick = () => sendWhatsAppMessage(product.name, section);
     }
 
     content.appendChild(btn);
