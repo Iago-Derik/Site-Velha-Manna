@@ -620,7 +620,8 @@ body.masculino-theme .section-title span {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start; /* Left align text */
+  align-items: center; /* Center align text */
+  text-align: center;
 }
 
 .banner-content h3 {
@@ -657,7 +658,7 @@ body.masculino-theme .section-title span {
 
   .banner-content {
     padding: 1rem;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .banner-content h3 {
