@@ -990,6 +990,13 @@ footer {
   margin-bottom: 0.5rem;
 }
 
+.banner-content h3,
+.banner-content p {
+  align-self: center;
+  text-align: center;
+  width: 100%;
+}
+
 /* Banner Gradients */
 #banner-feminino {
   background: linear-gradient(135deg, #f48fb1 0%, #fce4ec 100%);
