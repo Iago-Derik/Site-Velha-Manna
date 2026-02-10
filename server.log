@@ -1,7 +1,8 @@
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /feminino.html HTTP/1.1" 200 -
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /img/logo.png HTTP/1.1" 200 -
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /js/data.js HTTP/1.1" 200 -
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /css/style.css HTTP/1.1" 200 -
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /js/storage.js HTTP/1.1" 200 -
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /js/render.js HTTP/1.1" 200 -
-127.0.0.1 - - [10/Feb/2026 00:19:32] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:15] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:16] "GET /css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:16] "GET /img/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:16] "GET /js/data.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:16] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:16] "GET /js/storage.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:18] "GET /baloes.html HTTP/1.1" 200 -
+127.0.0.1 - - [10/Feb/2026 03:34:18] "GET /js/render.js HTTP/1.1" 200 -

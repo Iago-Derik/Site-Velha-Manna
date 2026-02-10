@@ -255,7 +255,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderSettings() {
     const config = getSiteConfig();
 
-    document.getElementById("site-logo-url").value = config.logoUrl || "";
+    // Check if logo is a Data URL (Base64) to avoid lagging the input
+    if (config.logoUrl && config.logoUrl.startsWith("data:")) {
+      document.getElementById("site-logo-url").value = "[Imagem Carregada]";
+      document.getElementById("site-logo-url").dataset.isBase64 = "true";
+    } else {
+      document.getElementById("site-logo-url").value = config.logoUrl || "";
+      delete document.getElementById("site-logo-url").dataset.isBase64;
+    }
+
     document.getElementById("bg-page-url").value = config.pageBgUrl || "";
 
     document.getElementById("bg-feminino").value =
@@ -282,8 +290,15 @@ document.addEventListener("DOMContentLoaded", () => {
     saveSettingsForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      let logoUrlValue = document.getElementById("site-logo-url").value;
+      // If the value is the placeholder for Base64, keep the existing one
+      if (logoUrlValue === "[Imagem Carregada]") {
+        const oldConfig = getSiteConfig();
+        logoUrlValue = oldConfig.logoUrl;
+      }
+
       const config = {
-        logoUrl: document.getElementById("site-logo-url").value,
+        logoUrl: logoUrlValue,
         pageBgUrl: document.getElementById("bg-page-url").value,
         banners: {
           feminino: document.getElementById("bg-feminino").value,
@@ -297,8 +312,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const checkFile = async (fileId, configKey, subKey = null) => {
         const fileInput = document.getElementById(fileId);
         if (fileInput && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          // Check size (limit to 2MB to avoid LocalStorage quota issues)
+          if (file.size > 2 * 1024 * 1024) {
+            alert(
+              `A imagem ${file.name} é muito grande (>2MB). Por favor, use uma imagem menor para garantir que seja salva.`,
+            );
+            return;
+          }
+
           try {
-            const dataUrl = await readFileAsDataURL(fileInput.files[0]);
+            const dataUrl = await readFileAsDataURL(file);
             if (subKey) {
               config[configKey][subKey] = dataUrl;
             } else {

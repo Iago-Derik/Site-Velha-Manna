@@ -20,7 +20,20 @@ window.initAnimations = function () {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
+          const el = entry.target;
+          el.classList.add("scroll-visible");
+          el.classList.remove("scroll-hidden");
+
+          // Remove inline transition after animation ends to restore CSS hover speeds
+          el.addEventListener(
+            "transitionend",
+            () => {
+              el.style.transition = "";
+            },
+            { once: true },
+          );
+
+          observer.unobserve(el);
         }
       });
     },
@@ -28,31 +41,16 @@ window.initAnimations = function () {
   );
 
   document.querySelectorAll(".card, .section-title").forEach((el) => {
-    // Only observe if not already visible/observed (to avoid resetting styles unnecessarily)
-    if (
-      !el.classList.contains("visible") &&
-      !el.classList.contains("observing")
-    ) {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(20px)";
+    if (!el.classList.contains("scroll-visible")) {
+      el.classList.add("scroll-hidden");
+      // Set slower transition for the entrance animation
       el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
       observer.observe(el);
-      el.classList.add("observing"); // Mark as observed
     }
   });
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Inject styles for animation
-  const style = document.createElement("style");
-  style.innerHTML = `
-        .visible {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
-    `;
-  document.head.appendChild(style);
-
   // Initial animation setup
   window.initAnimations();
 
