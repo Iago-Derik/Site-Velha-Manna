@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.style.backgroundSize = 'cover';
           document.body.style.backgroundAttachment = 'fixed';
       }
+      /*
       if (config.banners) {
           const setBannerBg = (id, bg) => {
               const el = document.getElementById(id);
@@ -87,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
           setBannerBg('banner-lembrancinhas', config.banners.lembrancinhas);
           setBannerBg('banner-cursos', config.banners.cursos);
       }
+      */
   }
 
   // (removed automatic active-link assignment per user request)
