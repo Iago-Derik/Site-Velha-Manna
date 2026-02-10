@@ -974,7 +974,6 @@ footer {
 
 /* Clean Banner Look */
 .banner-card {
-  background: transparent !important;
   box-shadow: none !important;
   border: none !important;
 }
@@ -989,4 +988,21 @@ footer {
   letter-spacing: 1px;
   display: block;
   margin-bottom: 0.5rem;
+}
+
+/* Banner Gradients */
+#banner-feminino {
+  background: linear-gradient(135deg, #f48fb1 0%, #fce4ec 100%);
+}
+#banner-masculino {
+  background: linear-gradient(135deg, #81d4fa 0%, #e1f5fe 100%);
+}
+#banner-baloes {
+  background: linear-gradient(135deg, #ffe082 0%, #fff9c4 100%);
+}
+#banner-lembrancinhas {
+  background: linear-gradient(135deg, #a5d6a7 0%, #e8f5e9 100%);
+}
+#banner-cursos {
+  background: linear-gradient(135deg, #ce93d8 0%, #f3e5f5 100%);
 }
