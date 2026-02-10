@@ -264,16 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
       delete document.getElementById("site-logo-url").dataset.isBase64;
     }
 
-    document.getElementById("bg-page-url").value = config.pageBgUrl || "";
-
-    document.getElementById("bg-feminino").value =
-      config.banners?.feminino || "";
-    document.getElementById("bg-masculino").value =
-      config.banners?.masculino || "";
-    document.getElementById("bg-baloes").value = config.banners?.baloes || "";
-    document.getElementById("bg-lembrancinhas").value =
-      config.banners?.lembrancinhas || "";
-    document.getElementById("bg-cursos").value = config.banners?.cursos || "";
   }
 
   // Helper to read file as Data URL
@@ -299,14 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const config = {
         logoUrl: logoUrlValue,
-        pageBgUrl: document.getElementById("bg-page-url").value,
-        banners: {
-          feminino: document.getElementById("bg-feminino").value,
-          masculino: document.getElementById("bg-masculino").value,
-          baloes: document.getElementById("bg-baloes").value,
-          lembrancinhas: document.getElementById("bg-lembrancinhas").value,
-          cursos: document.getElementById("bg-cursos").value,
-        },
+        // pageBgUrl and banners removed
       };
 
       const checkFile = async (fileId, configKey, subKey = null) => {
@@ -336,12 +319,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await Promise.all([
         checkFile("site-logo-file", "logoUrl"),
-        checkFile("bg-page-file", "pageBgUrl"),
-        checkFile("bg-feminino-file", "banners", "feminino"),
-        checkFile("bg-masculino-file", "banners", "masculino"),
-        checkFile("bg-baloes-file", "banners", "baloes"),
-        checkFile("bg-lembrancinhas-file", "banners", "lembrancinhas"),
-        checkFile("bg-cursos-file", "banners", "cursos"),
       ]);
 
       try {
