@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtn = document.querySelector(".close-modal");
   const addProductBtn = document.getElementById("add-product-btn");
   const productForm = document.getElementById("product-form");
+
+  // New Admin Elements
+  const addRuleBtn = document.getElementById("add-rule-btn");
+  const priceRulesContainer = document.getElementById("price-rules-container");
+  const priceRulesWrapper = document.getElementById("price-rules-wrapper");
+  const productSection = document.getElementById("product-section");
+  const productPriceContainer = document.getElementById("product-price-container");
+
   // Format price input as BRL while typing
   const priceInputGlobal = document.getElementById("product-price");
   if (priceInputGlobal) {
@@ -135,6 +143,57 @@ document.addEventListener("DOMContentLoaded", () => {
   // Filter Change
   sectionFilter.addEventListener("change", renderAdminProducts);
 
+  // Rule Management Logic
+  function addRuleInput(label = "", value = "") {
+      const div = document.createElement("div");
+      div.className = "rule-item";
+      div.innerHTML = `
+          <input type="text" placeholder="Rótulo (ex: 5 letras)" class="rule-label" value="${label}">
+          <input type="text" placeholder="Valor (ex: R$ 80,00)" class="rule-price" value="${value}">
+          <button type="button" class="remove-rule"><i class="fas fa-times"></i></button>
+      `;
+      priceRulesContainer.appendChild(div);
+
+      div.querySelector(".remove-rule").addEventListener("click", () => {
+          div.remove();
+      });
+
+      // Price formatting for the new input
+      const priceInput = div.querySelector(".rule-price");
+      priceInput.addEventListener("input", (e) => {
+          const el = e.target;
+          let digits = el.value.replace(/\D/g, "");
+          if (digits === "") {
+            el.value = "";
+            return;
+          }
+          const num = parseInt(digits, 10);
+          el.value = new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          }).format(num / 100);
+      });
+  }
+
+  if (addRuleBtn) {
+      addRuleBtn.addEventListener("click", () => addRuleInput());
+  }
+
+  function updateModalFields() {
+      const section = productSection.value;
+      if (section === "cursos") {
+          productPriceContainer.classList.remove("hidden");
+          priceRulesWrapper.classList.add("hidden");
+      } else {
+          productPriceContainer.classList.add("hidden");
+          priceRulesWrapper.classList.remove("hidden");
+      }
+  }
+
+  if (productSection) {
+      productSection.addEventListener("change", updateModalFields);
+  }
+
   // Modal Logic
   function openModal(product = null) {
     const modalTitle = document.getElementById("modal-title");
@@ -143,11 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const imageInput = document.getElementById("product-image");
     const descInput = document.getElementById("product-desc");
     const sectionInput = document.getElementById("product-section");
-    const priceInputContainer = document.getElementById(
-      "product-price-container",
-    );
     const priceInput = document.getElementById("product-price");
     const boldDescInput = document.getElementById("product-bold-desc");
+
+    // Clear rules
+    priceRulesContainer.innerHTML = "";
 
     if (product) {
       modalTitle.textContent = "Editar Produto";
@@ -158,11 +217,21 @@ document.addEventListener("DOMContentLoaded", () => {
       sectionInput.value = product.section;
       priceInput.value = product.price || "";
       boldDescInput.checked = product.isBold || false;
+
+      // Populate rules
+      if (product.priceRules && Array.isArray(product.priceRules)) {
+          product.priceRules.forEach(rule => {
+              addRuleInput(rule.label, rule.price);
+          });
+      }
     } else {
       modalTitle.textContent = "Adicionar Produto";
       idInput.value = "";
       productForm.reset();
+      // Reset price rules container is already done above
     }
+
+    updateModalFields(); // Set initial state based on section
 
     modal.classList.remove("hidden");
   }
@@ -189,12 +258,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("product-image-file");
     const imageInput = document.getElementById("product-image");
 
+    // Collect rules
+    const rules = [];
+    document.querySelectorAll(".rule-item").forEach(item => {
+        const label = item.querySelector(".rule-label").value;
+        const price = item.querySelector(".rule-price").value;
+        if (label && price) {
+            rules.push({ label, price });
+        }
+    });
+
     const productData = {
       name: document.getElementById("product-name").value,
       description: document.getElementById("product-desc").value,
       section: document.getElementById("product-section").value,
       price: document.getElementById("product-price").value,
       isBold: document.getElementById("product-bold-desc").checked,
+      priceRules: rules
     };
 
     const saveProduct = (imageUrl) => {

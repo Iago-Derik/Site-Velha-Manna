@@ -159,6 +159,31 @@
                 font-size: 0.8rem;
             }
         }
+
+        .rule-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .rule-item input {
+            flex: 1;
+            padding: 0.6rem !important; /* Override generic input padding if needed */
+        }
+
+        .rule-item button {
+            background: #ffcdd2;
+            color: #c62828;
+            border: none;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 
@@ -313,10 +338,6 @@
                         <input type="checkbox" id="product-bold-desc"> Destacar descrição em negrito
                     </label>
                 </div>
-                <div class="form-group" id="product-price-container">
-                    <label for="product-price">Preço</label>
-                    <input type="text" id="product-price" placeholder="R$ 0,00">
-                </div>
                 <div class="form-group">
                     <label for="product-section">Seção</label>
                     <select id="product-section" required>
@@ -327,6 +348,21 @@
                         <option value="lembrancinhas">Lembrancinhas</option>
                         <option value="amigurumis">Amigurumis</option>
                     </select>
+                </div>
+
+                <div class="form-group" id="product-price-container">
+                    <label for="product-price">Preço Atual</label>
+                    <input type="text" id="product-price" placeholder="R$ 0,00">
+                    <small style="color: #666;">Disponível apenas para a seção Cursos.</small>
+                </div>
+
+                <div class="form-group hidden" id="price-rules-wrapper">
+                    <label style="margin-bottom: 0.5rem; display: block;">Regras de Valores (Botões de Seleção)</label>
+                    <div id="price-rules-container">
+                        <!-- Rules will be added here dynamically -->
+                    </div>
+                    <button type="button" id="add-rule-btn" class="btn btn-secondary" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 8px 12px;">+ Adicionar Opção</button>
+                    <small style="display: block; color: #666; margin-top: 5px;">Ex: "5 letras" - R$ 80,00</small>
                 </div>
                 <button type="submit" class="btn" style="width: 100%;">Salvar</button>
             </form>

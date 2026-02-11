@@ -1,4 +1,4 @@
-function sendWhatsAppMessage(itemName, type) {
+function sendWhatsAppMessage(itemName, type, customDetails = null) {
   const phoneNumber = "5511999999999";
   let message = "";
 
@@ -6,6 +6,10 @@ function sendWhatsAppMessage(itemName, type) {
     message = `Olá! Gostaria de saber mais sobre o curso: ${itemName}`;
   } else {
     message = `Olá! Gostaria de encomendar este modelo artesanal feito à mão: ${itemName} 💛`;
+  }
+
+  if (customDetails) {
+    message += `\n\nDetalhes selecionados: ${customDetails}`;
   }
 
   const encodedMessage = encodeURIComponent(message);
