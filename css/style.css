@@ -586,36 +586,40 @@ body.masculino-theme .section-title span {
   }
 }
 
-/* Banner Cards (Balloons) */
+/* Banner Cards */
 .banner-card {
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-radius: var(--border-radius);
+  border-radius: 20px; /* Softer roundness like the image */
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Softer shadow */
   transition: all 0.3s ease;
-  height: 180px; /* Reduced height (was 250px) */
-  margin-bottom: 1rem; /* Added margin */
+  height: auto;
+  min-height: 160px;
+  margin-bottom: 1.5rem;
+  text-decoration: none;
+  border: none;
 }
 
 .banner-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .banner-img {
-  flex: 1;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  max-width: 40%; /* Image takes 40% width */
+  flex: 0 0 160px; /* Fixed width for image container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
 }
 
 .banner-img img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  max-height: 140px;
+  object-fit: contain; /* Contain to show the whole shape */
   transition: transform 0.5s ease;
 }
 
@@ -624,36 +628,40 @@ body.masculino-theme .section-title span {
 }
 
 .banner-content {
-  flex: 1.5;
-  padding: 2rem 3rem;
+  flex: 1;
+  padding: 1.5rem 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start; /* Left align text */
+  align-items: flex-start;
+}
+
+.banner-content small {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #777;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  display: block;
 }
 
 .banner-content h3 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem;
+  margin: 0 0 0.5rem 0;
   color: #333;
   font-family: "Milky Blend", "Poppins", sans-serif;
-  font-weight: 700;
+  font-weight: 400; /* Milky Blend is usually bold enough */
+  line-height: 1.1;
 }
 
 .banner-content p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #555;
-  margin-bottom: 1.5rem;
+  margin: 0;
   font-family: "Milky Blend", "Poppins", sans-serif;
-  font-weight: 400;
-}
-
-/* Specific overrides for banner content text alignment */
-.banner-content h3,
-.banner-content p {
-  align-self: flex-start;
-  text-align: left;
-  width: 100%;
+  line-height: 1.4;
+  opacity: 0.9;
 }
 
 /* Responsive */
@@ -1003,46 +1011,25 @@ footer {
   max-width: 320px;
 }
 
-/* Clean Banner Look */
-.banner-card {
-  box-shadow: none !important;
-  border: none !important;
-}
-.banner-content h3 {
-  font-size: 2.5rem;
-  margin-top: 0;
-}
-.banner-content small {
-  font-size: 1rem;
-  text-transform: uppercase;
-  color: #888;
-  letter-spacing: 1px;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.banner-content h3,
-.banner-content p {
-  align-self: flex-start; /* Changed from center */
-  text-align: left; /* Changed from center */
-  width: 100%;
-}
+/* Clean Banner Look (Legacy Override Removal) */
+/* The styles are now consolidated in the main .banner-card block */
 
 /* Banner Gradients */
+/* Specific Banner Gradients - Adjusted for softer look */
 #banner-feminino {
-  background: linear-gradient(135deg, #f48fb1 0%, #fce4ec 100%);
+  background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 100%);
 }
 #banner-masculino {
-  background: linear-gradient(135deg, #81d4fa 0%, #e1f5fe 100%);
+  background: linear-gradient(90deg, #e1f5fe 0%, #b3e5fc 100%);
 }
 #banner-baloes {
-  background: linear-gradient(135deg, #ffe082 0%, #fff9c4 100%);
+  background: linear-gradient(90deg, #fff9c4 0%, #fff59d 100%);
 }
 #banner-lembrancinhas {
-  background: linear-gradient(135deg, #a5d6a7 0%, #e8f5e9 100%);
+  background: linear-gradient(90deg, #e8f5e9 0%, #c8e6c9 100%);
 }
 #banner-cursos {
-  background: linear-gradient(135deg, #ce93d8 0%, #f3e5f5 100%);
+  background: linear-gradient(90deg, #f3e5f5 0%, #e1bee7 100%);
 }
 
 /* Lembrancinhas Page specific styles */

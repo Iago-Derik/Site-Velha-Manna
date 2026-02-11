@@ -50,17 +50,90 @@ document.addEventListener("DOMContentLoaded", () => {
   const userList = document.getElementById("user-list");
   const saveSettingsForm = document.getElementById("settings-form");
 
+  // Invite Elements
+  const inviteUserForm = document.getElementById("invite-user-form");
+  const inviteLinkDisplay = document.getElementById("invite-link-display");
+  const inviteResult = document.getElementById("invite-result");
+  const registrationSection = document.getElementById("registration-section");
+  const registrationForm = document.getElementById("registration-form");
+  const regError = document.getElementById("reg-error");
+
+  // Invite Logic handlers
+  if (inviteUserForm) {
+      inviteUserForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const email = document.getElementById("invite-email").value;
+          const token = addInvite(email);
+          const link = window.location.href.split('?')[0] + '?invite=' + token;
+          inviteLinkDisplay.textContent = link;
+          inviteResult.style.display = "block";
+      });
+  }
+
+  if (registrationForm) {
+      registrationForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const token = document.getElementById("invite-token").value;
+          const user = document.getElementById("reg-username").value;
+          const pass = document.getElementById("reg-password").value;
+          const confirmPass = document.getElementById("reg-confirm-password").value;
+
+          if (pass !== confirmPass) {
+              regError.textContent = "As senhas não coincidem.";
+              regError.style.display = "block";
+              return;
+          }
+
+          if (consumeInvite(token)) {
+               if (addUser(user, pass)) {
+                   alert("Conta criada com sucesso! Você será logado.");
+                   sessionStorage.setItem("isLoggedIn", "true");
+                   sessionStorage.setItem("currentUser", user);
+                   // Remove invite param from URL
+                   window.history.replaceState({}, document.title, window.location.pathname);
+                   // Refresh to load dashboard
+                   window.location.reload();
+               } else {
+                   regError.textContent = "Erro ao criar usuário (nome em uso?).";
+                   regError.style.display = "block";
+               }
+          } else {
+               regError.textContent = "Convite inválido ou expirado.";
+               regError.style.display = "block";
+          }
+      });
+  }
+
   // Check Login
   function checkLogin() {
     const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteToken = urlParams.get('invite');
+
+    if (inviteToken && !isLoggedIn) {
+        const invite = validateInvite(inviteToken);
+        if (invite) {
+            loginSection.classList.add("hidden");
+            dashboardSection.classList.add("hidden");
+            registrationSection.classList.remove("hidden");
+            document.getElementById("invite-token").value = inviteToken;
+            return;
+        } else {
+            alert("Convite inválido ou já utilizado.");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+
     if (isLoggedIn) {
       loginSection.classList.add("hidden");
       dashboardSection.classList.remove("hidden");
+      if (registrationSection) registrationSection.classList.add("hidden");
       logoutBtn.style.display = "block";
       renderAdminProducts();
     } else {
       loginSection.classList.remove("hidden");
       dashboardSection.classList.add("hidden");
+      if (registrationSection) registrationSection.classList.add("hidden");
       logoutBtn.style.display = "none";
     }
   }
