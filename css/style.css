@@ -596,7 +596,7 @@ body.masculino-theme .section-title span {
   box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Softer shadow */
   transition: all 0.3s ease;
   height: auto;
-  min-height: 160px;
+  min-height: 110px;
   margin-bottom: 1.5rem;
   text-decoration: none;
   border: none;
@@ -607,29 +607,9 @@ body.masculino-theme .section-title span {
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-.banner-img {
-  flex: 0 0 160px; /* Fixed width for image container */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
-
-.banner-img img {
-  width: 100%;
-  height: auto;
-  max-height: 140px;
-  object-fit: contain; /* Contain to show the whole shape */
-  transition: transform 0.5s ease;
-}
-
-.banner-card:hover .banner-img img {
-  transform: scale(1.05);
-}
-
 .banner-content {
   flex: 1;
-  padding: 1.5rem 2rem;
+  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -637,18 +617,18 @@ body.masculino-theme .section-title span {
 }
 
 .banner-content small {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #777;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   font-weight: 600;
   display: block;
 }
 
 .banner-content h3 {
-  font-size: 2.2rem;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+  margin: 0 0 0.25rem 0;
   color: #333;
   font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 400; /* Milky Blend is usually bold enough */
@@ -656,7 +636,7 @@ body.masculino-theme .section-title span {
 }
 
 .banner-content p {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #555;
   margin: 0;
   font-family: "Milky Blend", "Poppins", sans-serif;
@@ -667,48 +647,22 @@ body.masculino-theme .section-title span {
 /* Responsive */
 @media (max-width: 768px) {
   .banner-card {
-    flex-direction: row;
-    height: auto;
-    min-height: 120px;
-    text-align: left;
-    width: 100%; /* Ensure full width on mobile */
-    align-items: stretch;
-  }
-
-  .banner-img {
-    max-width: 35%;
-    width: 35%;
-    height: auto;
-    /* aspect-ratio: 1/1; Remove fixed aspect ratio to fill height if needed */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .banner-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* cover the area */
+    min-height: 110px;
+    padding: 1rem;
   }
 
   .banner-content {
-    padding: 1rem;
-    align-items: flex-start;
-    flex: 1; /* take remaining space */
+    padding: 0;
   }
 
   .banner-content h3 {
-    font-size: 1.5rem; /* Increase slightly for better readability */
-    margin-top: 0;
+    font-size: 1.5rem;
   }
 
   .banner-content p {
-    font-size: 0.95rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+    font-size: 0.85rem;
     -webkit-line-clamp: 3;
     line-clamp: 3;
-    overflow: hidden;
     margin-bottom: 0;
   }
 }
