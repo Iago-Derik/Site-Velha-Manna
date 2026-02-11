@@ -1,0 +1,16 @@
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /img/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /js/data.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /js/storage.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /fonts/MilkyBlend.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 22:25:14] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 22:25:14] "GET /fonts/MilkyBlend.ttf HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 22:25:16] "GET /admin.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:16] "GET /js/admin.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 22:25:16] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 22:25:16] "GET /fonts/MilkyBlend.woff2 HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 22:25:16] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 22:25:16] "GET /fonts/MilkyBlend.ttf HTTP/1.1" 404 -
