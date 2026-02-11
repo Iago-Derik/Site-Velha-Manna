@@ -1,8 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap");
 
-/* Local/Custom font: Creativo Regular
-   Place the font files under /fonts (e.g. fonts/Creativo-Regular.woff2)
-   If the file isn't provided the browser will fall back to Poppins. */
+/* Custom Font: Milky Blend */
+@font-face {
+  font-family: "Milky Blend";
+  src:
+    url("../fonts/MilkyBlend.woff2") format("woff2"),
+    url("../fonts/MilkyBlend.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Creativo Regular";
   src:
@@ -20,7 +28,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   overflow-x: hidden;
 }
 
@@ -97,7 +105,7 @@ ul {
   color: #333; /* Darker text for contrast on yellow */
   text-decoration: none;
   border-radius: 50px; /* Pill shape for more delicate look */
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -137,7 +145,7 @@ ul {
 .section-title,
 .section-title span,
 .banner-content h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   color: var(--text-color);
   text-align: center; /* center all section titles site-wide */
@@ -173,14 +181,14 @@ ul {
 .section-title,
 .section-title span,
 .banner-content h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   color: var(--text-color);
 }
 
 /* Collection button titles should use Poppins as requested */
 .collection-btn h4 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 600;
   color: var(--text-color);
 }
@@ -275,7 +283,7 @@ ul {
 /* Section titles on the feminino/masculino pages should use Poppins */
 body.feminino-theme .section-title span,
 body.masculino-theme .section-title span {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   font-size: 2rem;
   color: var(--text-color);
@@ -289,7 +297,7 @@ body.masculino-theme .section-title span {
 
 /* Collection header sentence styling and heart alignment */
 .collection-header h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 400;
   font-size: 0.95rem; /* slightly reduced so heart stays inline */
   line-height: 1.2;
@@ -587,7 +595,8 @@ body.masculino-theme .section-title span {
   overflow: hidden;
   box-shadow: var(--shadow);
   transition: all 0.3s ease;
-  height: 250px; /* Fixed height for consistency */
+  height: 180px; /* Reduced height (was 250px) */
+  margin-bottom: 1rem; /* Added margin */
 }
 
 .banner-card:hover {
@@ -627,7 +636,7 @@ body.masculino-theme .section-title span {
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: #333;
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
 }
 
@@ -635,8 +644,16 @@ body.masculino-theme .section-title span {
   font-size: 1.1rem;
   color: #555;
   margin-bottom: 1.5rem;
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 400;
+}
+
+/* Specific overrides for banner content text alignment */
+.banner-content h3,
+.banner-content p {
+  align-self: flex-start;
+  text-align: left;
+  width: 100%;
 }
 
 /* Responsive */
@@ -646,31 +663,45 @@ body.masculino-theme .section-title span {
     height: auto;
     min-height: 120px;
     text-align: left;
+    width: 100%; /* Ensure full width on mobile */
+    align-items: stretch;
   }
 
   .banner-img {
     max-width: 35%;
     width: 35%;
     height: auto;
-    aspect-ratio: 1/1;
+    /* aspect-ratio: 1/1; Remove fixed aspect ratio to fill height if needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .banner-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* cover the area */
   }
 
   .banner-content {
     padding: 1rem;
     align-items: flex-start;
+    flex: 1; /* take remaining space */
   }
 
   .banner-content h3 {
-    font-size: 1.2rem;
+    font-size: 1.5rem; /* Increase slightly for better readability */
+    margin-top: 0;
   }
 
   .banner-content p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     overflow: hidden;
+    margin-bottom: 0;
   }
 }
 
@@ -687,7 +718,7 @@ body.masculino-theme .section-title span {
 }
 
 .collection-header h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-size: 0.95rem;
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -749,7 +780,7 @@ body.masculino-theme .section-title span {
 }
 
 .collection-btn h4 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
@@ -763,7 +794,7 @@ body.masculino-theme .section-title span {
 .card-desc,
 .card-price,
 .card-text {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 500; /* base intermediate weight */
 }
 
@@ -888,7 +919,7 @@ body.masculino-theme .collection-btn h4 {
   border: 1px solid transparent;
   border-radius: 50px;
   font-size: 1rem;
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   background: white;
@@ -941,7 +972,7 @@ body.masculino-theme .search-bar {
 #hero h2,
 #hero p,
 footer {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   color: var(--text-color);
 }
 
@@ -992,8 +1023,8 @@ footer {
 
 .banner-content h3,
 .banner-content p {
-  align-self: center;
-  text-align: center;
+  align-self: flex-start; /* Changed from center */
+  text-align: left; /* Changed from center */
   width: 100%;
 }
 
@@ -1012,4 +1043,20 @@ footer {
 }
 #banner-cursos {
   background: linear-gradient(135deg, #ce93d8 0%, #f3e5f5 100%);
+}
+
+/* Lembrancinhas Page specific styles */
+.section-content {
+    display: none;
+}
+.section-content.active {
+    display: block;
+}
+
+#btn-lembrancinhas, #btn-amigurumis {
+    background: #f9f9f9;
+}
+#btn-lembrancinhas.active, #btn-amigurumis.active {
+    background-color: var(--secondary-bg);
+    border-color: var(--primary-color);
 }
