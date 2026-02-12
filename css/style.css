@@ -10,6 +10,52 @@
   font-display: swap;
 }
 
+/* Decorative amigurumi in home banners: lightweight inline SVG + soft animation */
+.home-page .banner-card {
+  position: relative;
+  overflow: visible; /* allow decorative element to sit outside the card if needed */
+}
+
+.home-page .banner-card::before {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  width: 96px;
+  height: 96px;
+  /* Simple inline SVG as a tiny decorative amigurumi placeholder (low bytes) */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><g fill='%23F48FB1' stroke='%23D8809D' stroke-width='2' stroke-linejoin='round'><circle cx='28' cy='34' r='18'/><circle cx='68' cy='34' r='18'/><rect x='16' y='52' width='64' height='34' rx='10' fill='%23F48FB1' stroke='%23D8809D'/></g></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform-origin: 50% 50%;
+  animation: amigurumi-float 5.5s ease-in-out infinite;
+  opacity: 0.95;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.12));
+}
+
+@keyframes amigurumi-float {
+  0% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+}
+
+/* Hide decorative element on smaller screens to avoid clutter and keep performance */
+@media (max-width: 900px) {
+  .home-page .banner-card::before {
+    display: none;
+  }
+}
+
+/* If you prefer to use a real image instead of the inline SVG, add an image to `img/amigurumi.png`
+   and replace the background-image URL above with: url('../img/amigurumi.png'); */
+
 @font-face {
   font-family: "Creativo Regular";
   src:
