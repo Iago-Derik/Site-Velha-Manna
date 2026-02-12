@@ -1,15 +1,22 @@
-function sendWhatsAppMessage(itemName, type, customDetails = null) {
-  const phoneNumber = "5511999999999";
+function sendWhatsAppMessage(itemName, type, customDetails = null, imageUrl = null) {
+  const phoneNumber = "5519988404110";
   let message = "";
 
   if (type === "curso") {
     message = `Olá! Gostaria de saber mais sobre o curso: ${itemName}`;
   } else {
-    message = `Olá! Gostaria de encomendar este modelo artesanal feito à mão: ${itemName} 💛`;
+    let detailsPart = customDetails ? ` de ${customDetails}` : "";
+    message = `Olá, tenho interesse em ${itemName}${detailsPart}!`;
   }
 
-  if (customDetails) {
-    message += `\n\nDetalhes selecionados: ${customDetails}`;
+  if (imageUrl) {
+    let fullUrl = imageUrl;
+    try {
+      fullUrl = new URL(imageUrl, window.location.href).href;
+    } catch (e) {
+      console.error("Invalid URL:", imageUrl);
+    }
+    message = `${fullUrl}\n\n${message}`;
   }
 
   const encodedMessage = encodeURIComponent(message);
