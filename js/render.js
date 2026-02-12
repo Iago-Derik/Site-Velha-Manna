@@ -1,5 +1,3 @@
-const PRICE_THRESHOLD = 150;
-
 function parsePrice(priceStr) {
   if (!priceStr) return 0;
   // Remove 'R$', spaces, and replace comma with dot
@@ -27,14 +25,13 @@ function renderProducts(section, containerId, filters = {}) {
     products = products.filter((p) => p.name.toLowerCase().includes(term));
   }
 
-  // Apply Collection Filter (Price based)
+  // Apply Collection Filter (Category based)
   if (filters.collection && filters.collection !== "all") {
     products = products.filter((p) => {
-      const price = parsePrice(p.price);
       if (filters.collection === "essencia") {
-        return price < PRICE_THRESHOLD;
+        return p.subCategory === "essencia";
       } else if (filters.collection === "encanto") {
-        return price >= PRICE_THRESHOLD;
+        return p.subCategory === "encanto";
       }
       return true;
     });

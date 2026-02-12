@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const productPriceContainer = document.getElementById(
     "product-price-container",
   );
+  const productSubcategoryContainer = document.getElementById(
+    "product-subcategory-container",
+  );
 
   // Format price input as BRL while typing
   const priceInputGlobal = document.getElementById("product-price");
@@ -267,9 +270,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (section === "cursos") {
       productPriceContainer.classList.remove("hidden");
       priceRulesWrapper.classList.add("hidden");
+      productSubcategoryContainer.classList.add("hidden");
+    } else if (section === "masculino" || section === "feminino") {
+      productPriceContainer.classList.add("hidden");
+      priceRulesWrapper.classList.remove("hidden");
+      productSubcategoryContainer.classList.remove("hidden");
     } else {
       productPriceContainer.classList.add("hidden");
       priceRulesWrapper.classList.remove("hidden");
+      productSubcategoryContainer.classList.add("hidden");
     }
   }
 
@@ -287,6 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sectionInput = document.getElementById("product-section");
     const priceInput = document.getElementById("product-price");
     const boldDescInput = document.getElementById("product-bold-desc");
+    const subcategoryInput = document.getElementById("product-subcategory");
 
     // Clear rules
     priceRulesContainer.innerHTML = "";
@@ -300,6 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sectionInput.value = product.section;
       priceInput.value = product.price || "";
       boldDescInput.checked = product.isBold || false;
+      subcategoryInput.value = product.subCategory || "";
 
       // Populate rules
       if (product.priceRules && Array.isArray(product.priceRules)) {
@@ -357,6 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
       section: document.getElementById("product-section").value,
       price: document.getElementById("product-price").value,
       isBold: document.getElementById("product-bold-desc").checked,
+      subCategory: document.getElementById("product-subcategory").value,
       priceRules: rules,
     };
 
