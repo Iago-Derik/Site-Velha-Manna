@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Móbile - Velha Manna</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-container">
+      <a href="index.html" class="logo-link">
+        <img src="img/logo.png" alt="Velha Manna Tricotins" class="nav-logo">
+      </a>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+        <li class="nav-item"><a href="feminino.html" class="nav-link">Meninas</a></li>
+        <li class="nav-item"><a href="masculino.html" class="nav-link">Meninos</a></li>
+        <li class="nav-item"><a href="baloes.html" class="nav-link">Balões</a></li>
+        <li class="nav-item"><a href="mobile.html" class="nav-link active">Móbile</a></li>
+        <li class="nav-item"><a href="lembrancinhas.html" class="nav-link">Lembrancinhas</a></li>
+        <li class="nav-item"><a href="cursos.html" class="nav-link">Cursos</a></li>
+      </ul>
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="mobile" class="section">
+      <div class="container">
+        <div class="section-title">
+          <span>Móbile</span>
+        </div>
+        <div id="mobile-container" class="grid">
+          <!-- Products can be loaded dynamically or added here. This page is based on the Balões layout. -->
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+          <a href="index.html" class="btn btn-secondary">Voltar</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="background: white; padding: 2rem 0; text-align: center; border-top: 1px solid #eee; margin-top: 2rem;">
+    <p style="color: var(--light-text); font-size: 0.9rem;">&copy; 2019 Velha Manna. Feito com carinho.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof renderProducts === 'function') {
+        try { renderProducts('mobile', 'mobile-container'); } catch (e) { /* no mobile products */ }
+      }
+    });
+  </script>
+  <script>
+    // Re-render when products change in localStorage (e.g., added via admin in another tab)
+    window.addEventListener('storage', (e) => {
+      // react to product changes saved by admin (supports different keys)
+      if (!e.key || e.key.indexOf('product') === -1) return;
+      if (typeof renderProducts === 'function') {
+        try { renderProducts('mobile', 'mobile-container'); } catch (err) { }
+      }
+    });
+
+    // Also re-render when the page gains focus (useful after adding product in admin same browser)
+    window.addEventListener('focus', () => {
+      if (typeof renderProducts === 'function') {
+        try { renderProducts('mobile', 'mobile-container'); } catch (err) { }
+      }
+    });
+  </script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>

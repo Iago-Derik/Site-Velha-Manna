@@ -18,7 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const priceRulesContainer = document.getElementById("price-rules-container");
   const priceRulesWrapper = document.getElementById("price-rules-wrapper");
   const productSection = document.getElementById("product-section");
-  const productPriceContainer = document.getElementById("product-price-container");
+  const productPriceContainer = document.getElementById(
+    "product-price-container",
+  );
 
   // Format price input as BRL while typing
   const priceInputGlobal = document.getElementById("product-price");
@@ -60,68 +62,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Invite Logic handlers
   if (inviteUserForm) {
-      inviteUserForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const email = document.getElementById("invite-email").value;
-          const token = addInvite(email);
-          const link = window.location.href.split('?')[0] + '?invite=' + token;
-          inviteLinkDisplay.textContent = link;
-          inviteResult.style.display = "block";
-      });
+    inviteUserForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("invite-email").value;
+      const token = addInvite(email);
+      const link = window.location.href.split("?")[0] + "?invite=" + token;
+      inviteLinkDisplay.textContent = link;
+      inviteResult.style.display = "block";
+    });
   }
 
   if (registrationForm) {
-      registrationForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const token = document.getElementById("invite-token").value;
-          const user = document.getElementById("reg-username").value;
-          const pass = document.getElementById("reg-password").value;
-          const confirmPass = document.getElementById("reg-confirm-password").value;
+    registrationForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const token = document.getElementById("invite-token").value;
+      const user = document.getElementById("reg-username").value;
+      const pass = document.getElementById("reg-password").value;
+      const confirmPass = document.getElementById("reg-confirm-password").value;
 
-          if (pass !== confirmPass) {
-              regError.textContent = "As senhas não coincidem.";
-              regError.style.display = "block";
-              return;
-          }
+      if (pass !== confirmPass) {
+        regError.textContent = "As senhas não coincidem.";
+        regError.style.display = "block";
+        return;
+      }
 
-          if (consumeInvite(token)) {
-               if (addUser(user, pass)) {
-                   alert("Conta criada com sucesso! Você será logado.");
-                   sessionStorage.setItem("isLoggedIn", "true");
-                   sessionStorage.setItem("currentUser", user);
-                   // Remove invite param from URL
-                   window.history.replaceState({}, document.title, window.location.pathname);
-                   // Refresh to load dashboard
-                   window.location.reload();
-               } else {
-                   regError.textContent = "Erro ao criar usuário (nome em uso?).";
-                   regError.style.display = "block";
-               }
-          } else {
-               regError.textContent = "Convite inválido ou expirado.";
-               regError.style.display = "block";
-          }
-      });
+      if (consumeInvite(token)) {
+        if (addUser(user, pass)) {
+          alert("Conta criada com sucesso! Você será logado.");
+          sessionStorage.setItem("isLoggedIn", "true");
+          sessionStorage.setItem("currentUser", user);
+          // Remove invite param from URL
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname,
+          );
+          // Refresh to load dashboard
+          window.location.reload();
+        } else {
+          regError.textContent = "Erro ao criar usuário (nome em uso?).";
+          regError.style.display = "block";
+        }
+      } else {
+        regError.textContent = "Convite inválido ou expirado.";
+        regError.style.display = "block";
+      }
+    });
   }
 
   // Check Login
   function checkLogin() {
     const isLoggedIn = sessionStorage.getItem("isLoggedIn");
     const urlParams = new URLSearchParams(window.location.search);
-    const inviteToken = urlParams.get('invite');
+    const inviteToken = urlParams.get("invite");
 
     if (inviteToken && !isLoggedIn) {
-        const invite = validateInvite(inviteToken);
-        if (invite) {
-            loginSection.classList.add("hidden");
-            dashboardSection.classList.add("hidden");
-            registrationSection.classList.remove("hidden");
-            document.getElementById("invite-token").value = inviteToken;
-            return;
-        } else {
-            alert("Convite inválido ou já utilizado.");
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+      const invite = validateInvite(inviteToken);
+      if (invite) {
+        loginSection.classList.add("hidden");
+        dashboardSection.classList.add("hidden");
+        registrationSection.classList.remove("hidden");
+        document.getElementById("invite-token").value = inviteToken;
+        return;
+      } else {
+        alert("Convite inválido ou já utilizado.");
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname,
+        );
+      }
     }
 
     if (isLoggedIn) {
@@ -218,53 +228,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Rule Management Logic
   function addRuleInput(label = "", value = "") {
-      const div = document.createElement("div");
-      div.className = "rule-item";
-      div.innerHTML = `
+    const div = document.createElement("div");
+    div.className = "rule-item";
+    div.innerHTML = `
           <input type="text" placeholder="Rótulo (ex: 5 letras)" class="rule-label" value="${label}">
           <input type="text" placeholder="Valor (ex: R$ 80,00)" class="rule-price" value="${value}">
           <button type="button" class="remove-rule"><i class="fas fa-times"></i></button>
       `;
-      priceRulesContainer.appendChild(div);
+    priceRulesContainer.appendChild(div);
 
-      div.querySelector(".remove-rule").addEventListener("click", () => {
-          div.remove();
-      });
+    div.querySelector(".remove-rule").addEventListener("click", () => {
+      div.remove();
+    });
 
-      // Price formatting for the new input
-      const priceInput = div.querySelector(".rule-price");
-      priceInput.addEventListener("input", (e) => {
-          const el = e.target;
-          let digits = el.value.replace(/\D/g, "");
-          if (digits === "") {
-            el.value = "";
-            return;
-          }
-          const num = parseInt(digits, 10);
-          el.value = new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(num / 100);
-      });
+    // Price formatting for the new input
+    const priceInput = div.querySelector(".rule-price");
+    priceInput.addEventListener("input", (e) => {
+      const el = e.target;
+      let digits = el.value.replace(/\D/g, "");
+      if (digits === "") {
+        el.value = "";
+        return;
+      }
+      const num = parseInt(digits, 10);
+      el.value = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(num / 100);
+    });
   }
 
   if (addRuleBtn) {
-      addRuleBtn.addEventListener("click", () => addRuleInput());
+    addRuleBtn.addEventListener("click", () => addRuleInput());
   }
 
   function updateModalFields() {
-      const section = productSection.value;
-      if (section === "cursos") {
-          productPriceContainer.classList.remove("hidden");
-          priceRulesWrapper.classList.add("hidden");
-      } else {
-          productPriceContainer.classList.add("hidden");
-          priceRulesWrapper.classList.remove("hidden");
-      }
+    const section = productSection.value;
+    if (section === "cursos") {
+      productPriceContainer.classList.remove("hidden");
+      priceRulesWrapper.classList.add("hidden");
+    } else {
+      productPriceContainer.classList.add("hidden");
+      priceRulesWrapper.classList.remove("hidden");
+    }
   }
 
   if (productSection) {
-      productSection.addEventListener("change", updateModalFields);
+    productSection.addEventListener("change", updateModalFields);
   }
 
   // Modal Logic
@@ -293,9 +303,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Populate rules
       if (product.priceRules && Array.isArray(product.priceRules)) {
-          product.priceRules.forEach(rule => {
-              addRuleInput(rule.label, rule.price);
-          });
+        product.priceRules.forEach((rule) => {
+          addRuleInput(rule.label, rule.price);
+        });
       }
     } else {
       modalTitle.textContent = "Adicionar Produto";
@@ -333,12 +343,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Collect rules
     const rules = [];
-    document.querySelectorAll(".rule-item").forEach(item => {
-        const label = item.querySelector(".rule-label").value;
-        const price = item.querySelector(".rule-price").value;
-        if (label && price) {
-            rules.push({ label, price });
-        }
+    document.querySelectorAll(".rule-item").forEach((item) => {
+      const label = item.querySelector(".rule-label").value;
+      const price = item.querySelector(".rule-price").value;
+      if (label && price) {
+        rules.push({ label, price });
+      }
     });
 
     const productData = {
@@ -347,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
       section: document.getElementById("product-section").value,
       price: document.getElementById("product-price").value,
       isBold: document.getElementById("product-bold-desc").checked,
-      priceRules: rules
+      priceRules: rules,
     };
 
     const saveProduct = (imageUrl) => {
@@ -360,6 +370,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       modal.classList.add("hidden");
+      // Trigger re-render in other tabs by updating a small timestamp key
+      try {
+        localStorage.setItem(
+          "products_data_last_change",
+          Date.now().toString(),
+        );
+      } catch (e) {}
       renderAdminProducts();
     };
 
@@ -416,7 +433,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("site-logo-url").value = config.logoUrl || "";
       delete document.getElementById("site-logo-url").dataset.isBase64;
     }
-
   }
 
   // Helper to read file as Data URL
@@ -470,9 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       };
 
-      await Promise.all([
-        checkFile("site-logo-file", "logoUrl"),
-      ]);
+      await Promise.all([checkFile("site-logo-file", "logoUrl")]);
 
       try {
         saveSiteConfig(config);

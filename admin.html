@@ -169,7 +169,8 @@
 
         .rule-item input {
             flex: 1;
-            padding: 0.6rem !important; /* Override generic input padding if needed */
+            padding: 0.6rem !important;
+            /* Override generic input padding if needed */
         }
 
         .rule-item button {
@@ -262,6 +263,7 @@
                             <option value="masculino">Masculino</option>
                             <option value="feminino">Feminino</option>
                             <option value="lembrancinhas">Lembrancinhas</option>
+                            <option value="mobile">Móbile</option>
                             <option value="amigurumis">Amigurumis</option>
                         </select>
                     </div>
@@ -285,22 +287,7 @@
 
                 <!-- Users View -->
                 <div id="users-view" class="hidden">
-                    <!-- Invite Section -->
-                    <div style="margin: 1rem 0; padding: 1rem; background: #e3f2fd; border-radius: 8px;">
-                        <h3 style="margin-bottom: 1rem;">Convidar Novo Usuário via E-mail</h3>
-                        <form id="invite-user-form" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label for="invite-email" style="display: block; margin-bottom: 0.5rem;">E-mail do Convidado</label>
-                                <input type="email" id="invite-email" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ddd;">
-                            </div>
-                            <button type="submit" class="btn" style="background-color: var(--primary-color);">Gerar Link de Convite</button>
-                        </form>
-                        <div id="invite-result" style="margin-top: 1rem; display: none;">
-                            <p><strong>Link gerado:</strong></p>
-                            <div style="background: white; padding: 0.5rem; border: 1px solid #ccc; word-break: break-all; user-select: all;" id="invite-link-display"></div>
-                            <small style="color: #666;">Copie este link e envie para o novo usuário.</small>
-                        </div>
-                    </div>
+                    <!-- Invite via email removed per request -->
 
                     <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
                         <h3 style="margin-bottom: 1rem;">Adicionar Novo Usuário (Manual)</h3>
@@ -383,6 +370,7 @@
                         <option value="masculino">Masculino</option>
                         <option value="feminino">Feminino</option>
                         <option value="lembrancinhas">Lembrancinhas</option>
+                        <option value="mobile">Móbile</option>
                         <option value="amigurumis">Amigurumis</option>
                     </select>
                 </div>

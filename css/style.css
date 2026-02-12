@@ -644,21 +644,22 @@ body.masculino-theme .section-title span {
     padding: 9px 14px;
     min-width: 130px;
   }
-  /* Reduce spacing between catalog banners on mobile */
+  /* Reduce spacing between catalog banners on mobile (tighter) */
   #catalogs .container {
-    gap: 0.6rem !important; /* override inline style */
+    gap: 0.35rem !important; /* tighter override inline style */
   }
   #catalogs .banner-card {
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.35rem;
+    padding: 0.6rem; /* reduce internal padding so cards are more compact */
   }
 }
 
 /* Also reduce spacing between banners on larger screens slightly */
 #catalogs .container {
-  gap: 1rem !important;
+  gap: 0.8rem !important;
 }
 #catalogs .banner-card {
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.7rem;
 }
 
 /* Desktop-only: place logo on the right without affecting mobile layout */
@@ -1073,20 +1074,25 @@ footer {
 
 /* Banner Gradients */
 /* Specific Banner Gradients - Adjusted for softer look */
+/* Banner solid backgrounds (replaced gradients with solid colors) */
 #banner-feminino {
-  background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 100%);
+  background-color: #f8bbd0; /* soft pink */
 }
 #banner-masculino {
-  background: linear-gradient(90deg, #e1f5fe 0%, #b3e5fc 100%);
+  background-color: #b3e5fc; /* soft blue */
 }
 #banner-baloes {
-  background: linear-gradient(90deg, #fff9c4 0%, #fff59d 100%);
+  background-color: #fff59d; /* soft yellow */
 }
 #banner-lembrancinhas {
-  background: linear-gradient(90deg, #e8f5e9 0%, #c8e6c9 100%);
+  background-color: #c8e6c9; /* soft green */
 }
 #banner-cursos {
-  background: linear-gradient(90deg, #f3e5f5 0%, #e1bee7 100%);
+  background-color: #e1bee7; /* soft purple */
+}
+/* Mobile banner: pastel orange */
+#banner-mobile {
+  background-color: #ffd8a8; /* pastel orange/peach */
 }
 
 /* Lembrancinhas Page specific styles */
@@ -1189,4 +1195,17 @@ body:not(.home-page) a[href*="wa.me"],
 body:not(.home-page) a[href*="whatsapp"] {
   font-family: "Poppins", sans-serif;
   font-weight: 600;
+}
+
+/* Price rule buttons: prevent 'visited/active' color change and make background slightly more visible */
+.price-rules-buttons button {
+  color: var(--text-color) !important;
+  background: #f2f2f2 !important; /* slightly darker than before */
+  border: 1px solid #e0e0e0 !important;
+}
+.price-rules-buttons button:focus,
+.price-rules-buttons button:active {
+  color: var(--text-color) !important;
+  outline: none !important;
+  box-shadow: none !important;
 }

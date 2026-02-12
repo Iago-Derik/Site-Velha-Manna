@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,105 +8,108 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-<nav class="navbar">
-    <div class="container navbar-container">
-        <a href="index.html" class="logo-link">
-             <img src="img/logo.png" alt="Velha Manna Tricotins" class="nav-logo">
-        </a>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
-            <li class="nav-item"><a href="feminino.html" class="nav-link">Meninas</a></li>
-            <li class="nav-item"><a href="masculino.html" class="nav-link">Meninos</a></li>
-            <li class="nav-item"><a href="baloes.html" class="nav-link">Balões</a></li>
-            <li class="nav-item"><a href="lembrancinhas.html" class="nav-link active">Lembrancinhas</a></li>
-            <li class="nav-item"><a href="cursos.html" class="nav-link">Cursos</a></li>
-        </ul>
-        <div class="hamburger">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="logo-link">
+                <img src="img/logo.png" alt="Velha Manna Tricotins" class="nav-logo">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                <li class="nav-item"><a href="feminino.html" class="nav-link">Meninas</a></li>
+                <li class="nav-item"><a href="masculino.html" class="nav-link">Meninos</a></li>
+                <li class="nav-item"><a href="baloes.html" class="nav-link">Balões</a></li>
+                <li class="nav-item"><a href="mobile.html" class="nav-link">Móbile</a></li>
+                <li class="nav-item"><a href="lembrancinhas.html" class="nav-link active">Lembrancinhas</a></li>
+                <li class="nav-item"><a href="cursos.html" class="nav-link">Cursos</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<main>
-    <div class="container" style="padding-top: 2rem;">
-        <div class="section-title">
-            <span>Catálogo</span>
-        </div>
+    <main>
+        <div class="container" style="padding-top: 2rem;">
+            <div class="section-title">
+                <span>Catálogo</span>
+            </div>
 
-        <div class="collection-selector-container">
-            <div class="collection-selector">
-                <div class="collection-btn active" id="btn-lembrancinhas">
-                    <small>Catálogo</small>
-                    <h4>Lembrancinhas</h4>
-                    <p>Detalhes que encantam</p>
+            <div class="collection-selector-container">
+                <div class="collection-selector">
+                    <div class="collection-btn active" id="btn-lembrancinhas">
+                        <small>Catálogo</small>
+                        <h4>Lembrancinhas</h4>
+                        <p>Detalhes que encantam</p>
+                    </div>
+                    <div class="collection-btn" id="btn-amigurumis">
+                        <small>Catálogo</small>
+                        <h4>Amigurumis</h4>
+                        <p>Feitos com carinho</p>
+                    </div>
                 </div>
-                <div class="collection-btn" id="btn-amigurumis">
-                    <small>Catálogo</small>
-                    <h4>Amigurumis</h4>
-                    <p>Feitos com carinho</p>
+            </div>
+        </div>
+
+        <section id="lembrancinhas-wrapper" class="section section-content active">
+            <div class="container">
+                <div id="lembrancinhas-container" class="grid">
+                    <!-- Products will be loaded dynamically -->
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <section id="lembrancinhas-wrapper" class="section section-content active">
-        <div class="container">
-            <div id="lembrancinhas-container" class="grid">
-                <!-- Products will be loaded dynamically -->
+        <section id="amigurumis-wrapper" class="section section-content">
+            <div class="container">
+                <div id="amigurumis-container" class="grid">
+                    <!-- Products will be loaded dynamically -->
+                </div>
             </div>
+        </section>
+
+        <div class="container" style="text-align: center; margin-bottom: 3rem;">
+            <a href="index.html" class="btn btn-secondary">Voltar</a>
         </div>
-    </section>
+    </main>
 
-    <section id="amigurumis-wrapper" class="section section-content">
-        <div class="container">
-            <div id="amigurumis-container" class="grid">
-                <!-- Products will be loaded dynamically -->
-            </div>
-        </div>
-    </section>
-
-    <div class="container" style="text-align: center; margin-bottom: 3rem;">
-        <a href="index.html" class="btn btn-secondary">Voltar</a>
-    </div>
-</main>
-
-<footer style="background: white; padding: 2rem 0; text-align: center; border-top: 1px solid #eee; margin-top: 2rem;">
+    <footer style="background: white; padding: 2rem 0; text-align: center; border-top: 1px solid #eee; margin-top: 2rem;">
         <p style="color: var(--light-text); font-size: 0.9rem;">&copy; 2019 Velha Manna. Feito com carinho.</p>
-</footer>
+    </footer>
 
-<script src="js/data.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/render.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Render both sections initially
-        renderProducts('lembrancinhas', 'lembrancinhas-container');
-        renderProducts('amigurumis', 'amigurumis-container');
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/render.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render both sections initially
+            renderProducts('lembrancinhas', 'lembrancinhas-container');
+            renderProducts('amigurumis', 'amigurumis-container');
 
-        const btnLembrancinhas = document.getElementById('btn-lembrancinhas');
-        const btnAmigurumis = document.getElementById('btn-amigurumis');
-        const sectionLembrancinhas = document.getElementById('lembrancinhas-wrapper');
-        const sectionAmigurumis = document.getElementById('amigurumis-wrapper');
+            const btnLembrancinhas = document.getElementById('btn-lembrancinhas');
+            const btnAmigurumis = document.getElementById('btn-amigurumis');
+            const sectionLembrancinhas = document.getElementById('lembrancinhas-wrapper');
+            const sectionAmigurumis = document.getElementById('amigurumis-wrapper');
 
-        btnLembrancinhas.addEventListener('click', () => {
-            btnLembrancinhas.classList.add('active');
-            btnAmigurumis.classList.remove('active');
-            sectionLembrancinhas.classList.add('active');
-            sectionAmigurumis.classList.remove('active');
+            btnLembrancinhas.addEventListener('click', () => {
+                btnLembrancinhas.classList.add('active');
+                btnAmigurumis.classList.remove('active');
+                sectionLembrancinhas.classList.add('active');
+                sectionAmigurumis.classList.remove('active');
+            });
+
+            btnAmigurumis.addEventListener('click', () => {
+                btnAmigurumis.classList.add('active');
+                btnLembrancinhas.classList.remove('active');
+                sectionAmigurumis.classList.add('active');
+                sectionLembrancinhas.classList.remove('active');
+            });
         });
-
-        btnAmigurumis.addEventListener('click', () => {
-            btnAmigurumis.classList.add('active');
-            btnLembrancinhas.classList.remove('active');
-            sectionAmigurumis.classList.add('active');
-            sectionLembrancinhas.classList.remove('active');
-        });
-    });
-</script>
-<script src="js/script.js"></script>
+    </script>
+    <script src="js/script.js"></script>
 </body>
+
 </html>
