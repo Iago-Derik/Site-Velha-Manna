@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtn = document.querySelector(".close-modal");
   const addProductBtn = document.getElementById("add-product-btn");
   const productForm = document.getElementById("product-form");
+
+  // New Admin Elements
+  const addRuleBtn = document.getElementById("add-rule-btn");
+  const priceRulesContainer = document.getElementById("price-rules-container");
+  const priceRulesWrapper = document.getElementById("price-rules-wrapper");
+  const productSection = document.getElementById("product-section");
+  const productPriceContainer = document.getElementById("product-price-container");
+
   // Format price input as BRL while typing
   const priceInputGlobal = document.getElementById("product-price");
   if (priceInputGlobal) {
@@ -42,17 +50,90 @@ document.addEventListener("DOMContentLoaded", () => {
   const userList = document.getElementById("user-list");
   const saveSettingsForm = document.getElementById("settings-form");
 
+  // Invite Elements
+  const inviteUserForm = document.getElementById("invite-user-form");
+  const inviteLinkDisplay = document.getElementById("invite-link-display");
+  const inviteResult = document.getElementById("invite-result");
+  const registrationSection = document.getElementById("registration-section");
+  const registrationForm = document.getElementById("registration-form");
+  const regError = document.getElementById("reg-error");
+
+  // Invite Logic handlers
+  if (inviteUserForm) {
+      inviteUserForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const email = document.getElementById("invite-email").value;
+          const token = addInvite(email);
+          const link = window.location.href.split('?')[0] + '?invite=' + token;
+          inviteLinkDisplay.textContent = link;
+          inviteResult.style.display = "block";
+      });
+  }
+
+  if (registrationForm) {
+      registrationForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const token = document.getElementById("invite-token").value;
+          const user = document.getElementById("reg-username").value;
+          const pass = document.getElementById("reg-password").value;
+          const confirmPass = document.getElementById("reg-confirm-password").value;
+
+          if (pass !== confirmPass) {
+              regError.textContent = "As senhas não coincidem.";
+              regError.style.display = "block";
+              return;
+          }
+
+          if (consumeInvite(token)) {
+               if (addUser(user, pass)) {
+                   alert("Conta criada com sucesso! Você será logado.");
+                   sessionStorage.setItem("isLoggedIn", "true");
+                   sessionStorage.setItem("currentUser", user);
+                   // Remove invite param from URL
+                   window.history.replaceState({}, document.title, window.location.pathname);
+                   // Refresh to load dashboard
+                   window.location.reload();
+               } else {
+                   regError.textContent = "Erro ao criar usuário (nome em uso?).";
+                   regError.style.display = "block";
+               }
+          } else {
+               regError.textContent = "Convite inválido ou expirado.";
+               regError.style.display = "block";
+          }
+      });
+  }
+
   // Check Login
   function checkLogin() {
     const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteToken = urlParams.get('invite');
+
+    if (inviteToken && !isLoggedIn) {
+        const invite = validateInvite(inviteToken);
+        if (invite) {
+            loginSection.classList.add("hidden");
+            dashboardSection.classList.add("hidden");
+            registrationSection.classList.remove("hidden");
+            document.getElementById("invite-token").value = inviteToken;
+            return;
+        } else {
+            alert("Convite inválido ou já utilizado.");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+
     if (isLoggedIn) {
       loginSection.classList.add("hidden");
       dashboardSection.classList.remove("hidden");
+      if (registrationSection) registrationSection.classList.add("hidden");
       logoutBtn.style.display = "block";
       renderAdminProducts();
     } else {
       loginSection.classList.remove("hidden");
       dashboardSection.classList.add("hidden");
+      if (registrationSection) registrationSection.classList.add("hidden");
       logoutBtn.style.display = "none";
     }
   }
@@ -135,6 +216,57 @@ document.addEventListener("DOMContentLoaded", () => {
   // Filter Change
   sectionFilter.addEventListener("change", renderAdminProducts);
 
+  // Rule Management Logic
+  function addRuleInput(label = "", value = "") {
+      const div = document.createElement("div");
+      div.className = "rule-item";
+      div.innerHTML = `
+          <input type="text" placeholder="Rótulo (ex: 5 letras)" class="rule-label" value="${label}">
+          <input type="text" placeholder="Valor (ex: R$ 80,00)" class="rule-price" value="${value}">
+          <button type="button" class="remove-rule"><i class="fas fa-times"></i></button>
+      `;
+      priceRulesContainer.appendChild(div);
+
+      div.querySelector(".remove-rule").addEventListener("click", () => {
+          div.remove();
+      });
+
+      // Price formatting for the new input
+      const priceInput = div.querySelector(".rule-price");
+      priceInput.addEventListener("input", (e) => {
+          const el = e.target;
+          let digits = el.value.replace(/\D/g, "");
+          if (digits === "") {
+            el.value = "";
+            return;
+          }
+          const num = parseInt(digits, 10);
+          el.value = new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          }).format(num / 100);
+      });
+  }
+
+  if (addRuleBtn) {
+      addRuleBtn.addEventListener("click", () => addRuleInput());
+  }
+
+  function updateModalFields() {
+      const section = productSection.value;
+      if (section === "cursos") {
+          productPriceContainer.classList.remove("hidden");
+          priceRulesWrapper.classList.add("hidden");
+      } else {
+          productPriceContainer.classList.add("hidden");
+          priceRulesWrapper.classList.remove("hidden");
+      }
+  }
+
+  if (productSection) {
+      productSection.addEventListener("change", updateModalFields);
+  }
+
   // Modal Logic
   function openModal(product = null) {
     const modalTitle = document.getElementById("modal-title");
@@ -143,11 +275,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const imageInput = document.getElementById("product-image");
     const descInput = document.getElementById("product-desc");
     const sectionInput = document.getElementById("product-section");
-    const priceInputContainer = document.getElementById(
-      "product-price-container",
-    );
     const priceInput = document.getElementById("product-price");
     const boldDescInput = document.getElementById("product-bold-desc");
+
+    // Clear rules
+    priceRulesContainer.innerHTML = "";
 
     if (product) {
       modalTitle.textContent = "Editar Produto";
@@ -158,11 +290,21 @@ document.addEventListener("DOMContentLoaded", () => {
       sectionInput.value = product.section;
       priceInput.value = product.price || "";
       boldDescInput.checked = product.isBold || false;
+
+      // Populate rules
+      if (product.priceRules && Array.isArray(product.priceRules)) {
+          product.priceRules.forEach(rule => {
+              addRuleInput(rule.label, rule.price);
+          });
+      }
     } else {
       modalTitle.textContent = "Adicionar Produto";
       idInput.value = "";
       productForm.reset();
+      // Reset price rules container is already done above
     }
+
+    updateModalFields(); // Set initial state based on section
 
     modal.classList.remove("hidden");
   }
@@ -189,12 +331,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("product-image-file");
     const imageInput = document.getElementById("product-image");
 
+    // Collect rules
+    const rules = [];
+    document.querySelectorAll(".rule-item").forEach(item => {
+        const label = item.querySelector(".rule-label").value;
+        const price = item.querySelector(".rule-price").value;
+        if (label && price) {
+            rules.push({ label, price });
+        }
+    });
+
     const productData = {
       name: document.getElementById("product-name").value,
       description: document.getElementById("product-desc").value,
       section: document.getElementById("product-section").value,
       price: document.getElementById("product-price").value,
       isBold: document.getElementById("product-bold-desc").checked,
+      priceRules: rules
     };
 
     const saveProduct = (imageUrl) => {
@@ -255,17 +408,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderSettings() {
     const config = getSiteConfig();
 
-    document.getElementById("site-logo-url").value = config.logoUrl || "";
-    document.getElementById("bg-page-url").value = config.pageBgUrl || "";
+    // Check if logo is a Data URL (Base64) to avoid lagging the input
+    if (config.logoUrl && config.logoUrl.startsWith("data:")) {
+      document.getElementById("site-logo-url").value = "[Imagem Carregada]";
+      document.getElementById("site-logo-url").dataset.isBase64 = "true";
+    } else {
+      document.getElementById("site-logo-url").value = config.logoUrl || "";
+      delete document.getElementById("site-logo-url").dataset.isBase64;
+    }
 
-    document.getElementById("bg-feminino").value =
-      config.banners?.feminino || "";
-    document.getElementById("bg-masculino").value =
-      config.banners?.masculino || "";
-    document.getElementById("bg-baloes").value = config.banners?.baloes || "";
-    document.getElementById("bg-lembrancinhas").value =
-      config.banners?.lembrancinhas || "";
-    document.getElementById("bg-cursos").value = config.banners?.cursos || "";
   }
 
   // Helper to read file as Data URL
@@ -282,23 +433,32 @@ document.addEventListener("DOMContentLoaded", () => {
     saveSettingsForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      let logoUrlValue = document.getElementById("site-logo-url").value;
+      // If the value is the placeholder for Base64, keep the existing one
+      if (logoUrlValue === "[Imagem Carregada]") {
+        const oldConfig = getSiteConfig();
+        logoUrlValue = oldConfig.logoUrl;
+      }
+
       const config = {
-        logoUrl: document.getElementById("site-logo-url").value,
-        pageBgUrl: document.getElementById("bg-page-url").value,
-        banners: {
-          feminino: document.getElementById("bg-feminino").value,
-          masculino: document.getElementById("bg-masculino").value,
-          baloes: document.getElementById("bg-baloes").value,
-          lembrancinhas: document.getElementById("bg-lembrancinhas").value,
-          cursos: document.getElementById("bg-cursos").value,
-        },
+        logoUrl: logoUrlValue,
+        // pageBgUrl and banners removed
       };
 
       const checkFile = async (fileId, configKey, subKey = null) => {
         const fileInput = document.getElementById(fileId);
         if (fileInput && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          // Check size (limit to 2MB to avoid LocalStorage quota issues)
+          if (file.size > 2 * 1024 * 1024) {
+            alert(
+              `A imagem ${file.name} é muito grande (>2MB). Por favor, use uma imagem menor para garantir que seja salva.`,
+            );
+            return;
+          }
+
           try {
-            const dataUrl = await readFileAsDataURL(fileInput.files[0]);
+            const dataUrl = await readFileAsDataURL(file);
             if (subKey) {
               config[configKey][subKey] = dataUrl;
             } else {
@@ -312,12 +472,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await Promise.all([
         checkFile("site-logo-file", "logoUrl"),
-        checkFile("bg-page-file", "pageBgUrl"),
-        checkFile("bg-feminino-file", "banners", "feminino"),
-        checkFile("bg-masculino-file", "banners", "masculino"),
-        checkFile("bg-baloes-file", "banners", "baloes"),
-        checkFile("bg-lembrancinhas-file", "banners", "lembrancinhas"),
-        checkFile("bg-cursos-file", "banners", "cursos"),
       ]);
 
       try {

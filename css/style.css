@@ -1,8 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Borel&display=swap");
 
-/* Local/Custom font: Creativo Regular
-   Place the font files under /fonts (e.g. fonts/Creativo-Regular.woff2)
-   If the file isn't provided the browser will fall back to Poppins. */
+/* Custom Font: Milky Blend (load from local fonts folder) */
+@font-face {
+  font-family: "Milky Blend";
+  src: url("../fonts/Milky%20Blend.woff2") format("opentype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Creativo Regular";
   src:
@@ -11,6 +18,19 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Milky Blend", "Poppins", sans-serif;
+  overflow-x: hidden;
 }
 
 :root {
@@ -86,7 +106,7 @@ ul {
   color: #333; /* Darker text for contrast on yellow */
   text-decoration: none;
   border-radius: 50px; /* Pill shape for more delicate look */
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -126,7 +146,7 @@ ul {
 .section-title,
 .section-title span,
 .banner-content h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   color: var(--text-color);
   text-align: center; /* center all section titles site-wide */
@@ -162,14 +182,14 @@ ul {
 .section-title,
 .section-title span,
 .banner-content h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   color: var(--text-color);
 }
 
 /* Collection button titles should use Poppins as requested */
 .collection-btn h4 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 600;
   color: var(--text-color);
 }
@@ -181,7 +201,7 @@ ul {
 .grid {
   display: grid;
   /* keep items a controlled width so they don't spread excessively when few items */
-  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 320px));
   gap: 1rem; /* smaller, consistent gap */
   justify-content: center;
 }
@@ -264,7 +284,7 @@ ul {
 /* Section titles on the feminino/masculino pages should use Poppins */
 body.feminino-theme .section-title span,
 body.masculino-theme .section-title span {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 700;
   font-size: 2rem;
   color: var(--text-color);
@@ -278,7 +298,7 @@ body.masculino-theme .section-title span {
 
 /* Collection header sentence styling and heart alignment */
 .collection-header h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 400;
   font-size: 0.95rem; /* slightly reduced so heart stays inline */
   line-height: 1.2;
@@ -512,12 +532,12 @@ body.masculino-theme .section-title span {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .section {
-    padding: 3rem 0 !important;
+    padding: 2rem 0 !important;
   }
 
   .section-title {
-    font-size: 2rem !important;
-    margin-bottom: 2rem;
+    font-size: 1.75rem !important;
+    margin-bottom: 1rem;
   }
 
   #hero {
@@ -533,7 +553,8 @@ body.masculino-theme .section-title span {
   }
 
   .btn {
-    width: 100%; /* Full width buttons on mobile for better accessibility */
+    width: auto;
+    min-width: 200px;
     padding: 16px 20px;
   }
 
@@ -566,99 +587,84 @@ body.masculino-theme .section-title span {
   }
 }
 
-/* Banner Cards (Balloons) */
+/* Banner Cards */
 .banner-card {
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-radius: var(--border-radius);
+  border-radius: 20px; /* Softer roundness like the image */
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Softer shadow */
   transition: all 0.3s ease;
-  height: 250px; /* Fixed height for consistency */
+  height: auto;
+  min-height: 110px;
+  margin-bottom: 1.5rem;
+  text-decoration: none;
+  border: none;
 }
 
 .banner-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
-}
-
-.banner-img {
-  flex: 1;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  max-width: 40%; /* Image takes 40% width */
-}
-
-.banner-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.banner-card:hover .banner-img img {
-  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .banner-content {
-  flex: 1.5;
-  padding: 2rem 3rem;
+  flex: 1;
+  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start; /* Left align text */
+  align-items: flex-start;
+}
+
+.banner-content small {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #777;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+  display: block;
 }
 
 .banner-content h3 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  margin: 0 0 0.25rem 0;
   color: #333;
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
+  font-family: "Milky Blend", "Poppins", sans-serif;
+  font-weight: 400; /* Milky Blend is usually bold enough */
+  line-height: 1.1;
 }
 
 .banner-content p {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #555;
-  margin-bottom: 1.5rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
+  margin: 0;
+  font-family: "Milky Blend", "Poppins", sans-serif;
+  line-height: 1.4;
+  opacity: 0.9;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .banner-card {
-    flex-direction: row;
-    height: auto;
-    min-height: 120px;
-    text-align: left;
-  }
-
-  .banner-img {
-    max-width: 35%;
-    width: 35%;
-    height: auto;
-    aspect-ratio: 1/1;
+    min-height: 110px;
+    padding: 1rem;
   }
 
   .banner-content {
-    padding: 1rem;
-    align-items: flex-start;
+    padding: 0;
   }
 
   .banner-content h3 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .banner-content p {
-    font-size: 0.9rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+    font-size: 0.85rem;
     -webkit-line-clamp: 3;
     line-clamp: 3;
-    overflow: hidden;
+    margin-bottom: 0;
   }
 }
 
@@ -675,7 +681,7 @@ body.masculino-theme .section-title span {
 }
 
 .collection-header h3 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-size: 0.95rem;
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -737,7 +743,7 @@ body.masculino-theme .section-title span {
 }
 
 .collection-btn h4 {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
@@ -745,21 +751,25 @@ body.masculino-theme .section-title span {
   transform: translateY(2px);
 }
 
-/* Ensure navbar links and product card texts use Poppins (sans-serif) for readability */
-.nav-link,
+/* Navbar should keep the original sans-serif (Poppins) for readability */
+.nav-link {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600; /* stronger for nav links */
+}
+
+/* Product/card text uses Milky Blend site-wide (with Poppins fallback) */
 .card-title,
 .card-desc,
 .card-price,
 .card-text {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   font-weight: 500; /* base intermediate weight */
 }
 
-/* Slight emphasis for hierarchy */
-.nav-link,
+/* Slight emphasis for hierarchy on titles/prices */
 .card-title,
 .card-price {
-  font-weight: 600; /* a bit stronger for nav, title and price */
+  font-weight: 600;
 }
 
 .collection-btn p {
@@ -876,7 +886,7 @@ body.masculino-theme .collection-btn h4 {
   border: 1px solid transparent;
   border-radius: 50px;
   font-size: 1rem;
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   background: white;
@@ -915,9 +925,11 @@ body.masculino-theme .search-bar {
   .collection-btn {
     width: 100%;
     max-width: 350px;
+    flex: 1 1 auto;
+    min-width: 0;
   }
   .collection-header h3 {
-    font-size: 1.4rem;
+    font-size: 1rem;
     flex-direction: column;
   }
 }
@@ -927,11 +939,156 @@ body.masculino-theme .search-bar {
 #hero h2,
 #hero p,
 footer {
-  font-family: "Poppins", sans-serif;
+  font-family: "Milky Blend", "Poppins", sans-serif;
   color: var(--text-color);
 }
 
 /* Slightly stronger weight for the hero title to match admin heading */
 #hero h2 {
+  font-weight: 600;
+}
+
+/* Scroll Animation Classes */
+.scroll-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.scroll-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Home Page Specifics */
+.home-page .navbar {
+  display: none !important;
+}
+.home-page .hamburger {
+  display: none !important;
+}
+.home-page .hero-logo {
+  max-width: 320px;
+}
+
+/* Clean Banner Look (Legacy Override Removal) */
+/* The styles are now consolidated in the main .banner-card block */
+
+/* Banner Gradients */
+/* Specific Banner Gradients - Adjusted for softer look */
+#banner-feminino {
+  background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 100%);
+}
+#banner-masculino {
+  background: linear-gradient(90deg, #e1f5fe 0%, #b3e5fc 100%);
+}
+#banner-baloes {
+  background: linear-gradient(90deg, #fff9c4 0%, #fff59d 100%);
+}
+#banner-lembrancinhas {
+  background: linear-gradient(90deg, #e8f5e9 0%, #c8e6c9 100%);
+}
+#banner-cursos {
+  background: linear-gradient(90deg, #f3e5f5 0%, #e1bee7 100%);
+}
+
+/* Lembrancinhas Page specific styles */
+.section-content {
+  display: none;
+}
+.section-content.active {
+  display: block;
+}
+
+#btn-lembrancinhas,
+#btn-amigurumis {
+  background: #f9f9f9;
+}
+#btn-lembrancinhas.active,
+#btn-amigurumis.active {
+  background-color: var(--secondary-bg);
+  border-color: var(--primary-color);
+}
+
+/* Baloo 2: apply only to homepage banner titles and the 'Fale comigo' button */
+.home-page .banner-content h3 {
+  font-family: "Baloo 2", cursive;
+  font-weight: 600;
+}
+
+.home-page #hero .btn {
+  font-family: "Baloo 2", cursive;
+  font-weight: 600;
+}
+
+/* Apply Borel only to the hero title 'Fale comigo' on the homepage */
+.home-page #hero h2 {
+  font-family: "Borel", cursive;
+  font-weight: 400;
+}
+
+/* Force Poppins (sans-serif) for banner small/title phrases and hero paragraph on homepage */
+.home-page .banner-content small,
+.home-page .banner-content p,
+.home-page #hero p {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+}
+
+/* 'Catálogo' small in banners: matte/off-white for better contrast */
+.home-page .banner-content small {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Revert other pages (non-home) to Poppins as the default (no serif) */
+body:not(.home-page) {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Ensure headings on non-home pages also use Poppins */
+body:not(.home-page) h1,
+body:not(.home-page) h2,
+body:not(.home-page) h3,
+body:not(.home-page) h4,
+body:not(.home-page) h5,
+body:not(.home-page) h6 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+
+/* Specific elements on non-home pages should use Poppins (restore previous look) */
+body:not(.home-page) .section-title,
+body:not(.home-page) .section-title span,
+body:not(.home-page) .collection-btn h4,
+body:not(.home-page) .banner-content h3,
+body:not(.home-page) .card-title,
+body:not(.home-page) .card-desc,
+body:not(.home-page) .card-price,
+body:not(.home-page) .card-text,
+body:not(.home-page) .collection-header h3 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+}
+
+/* Slightly bolder (but not excessive) for page titles and product names on non-home pages */
+body:not(.home-page) .section-title,
+body:not(.home-page) .section-title span,
+body:not(.home-page) .card-title {
+  font-weight: 700; /* stronger emphasis, still reasonable */
+}
+
+/* Search input and its placeholder on non-home pages */
+body:not(.home-page) .search-bar {
+  font-family: "Poppins", sans-serif;
+}
+body:not(.home-page) .search-bar::placeholder {
+  font-family: "Poppins", sans-serif;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Buttons and WhatsApp links on non-home pages */
+body:not(.home-page) .btn,
+body:not(.home-page) a[href*="wa.me"],
+body:not(.home-page) a[href*="whatsapp"] {
+  font-family: "Poppins", sans-serif;
   font-weight: 600;
 }

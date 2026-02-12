@@ -76,6 +76,9 @@ function renderProducts(section, containerId, filters = {}) {
         style: "currency",
         currency: "BRL",
       }).format(numeric);
+    } else {
+        // Leave empty if no base price, or could add logic to show range if rules exist
+        priceSpan.textContent = "";
     }
 
     header.appendChild(title);
@@ -94,6 +97,58 @@ function renderProducts(section, containerId, filters = {}) {
       content.appendChild(desc);
     }
 
+    // Price Rules Buttons
+    let selectedRuleDetails = null;
+
+    if (product.priceRules && Array.isArray(product.priceRules) && product.priceRules.length > 0) {
+        const rulesContainer = document.createElement("div");
+        rulesContainer.className = "price-rules-buttons";
+        rulesContainer.style.marginBottom = "0.8rem";
+        rulesContainer.style.display = "flex";
+        rulesContainer.style.gap = "0.5rem";
+        rulesContainer.style.flexWrap = "wrap";
+
+        product.priceRules.forEach(rule => {
+            const ruleBtn = document.createElement("button");
+            // Basic styling for rule buttons
+            ruleBtn.style.padding = "6px 10px";
+            ruleBtn.style.fontSize = "0.8rem";
+            ruleBtn.style.borderRadius = "8px";
+            ruleBtn.style.border = "1px solid #ddd";
+            ruleBtn.style.background = "#f9f9f9";
+            ruleBtn.style.cursor = "pointer";
+            ruleBtn.style.transition = "all 0.2s";
+            ruleBtn.style.fontFamily = "inherit";
+            ruleBtn.textContent = rule.label;
+
+            ruleBtn.onclick = () => {
+                // Update price
+                const numeric = parsePrice(rule.price);
+                priceSpan.textContent = new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                }).format(numeric);
+
+                // Highlight button
+                Array.from(rulesContainer.children).forEach(btn => {
+                   btn.style.background = "#f9f9f9";
+                   btn.style.color = "var(--text-color)";
+                   btn.style.borderColor = "#ddd";
+                });
+                ruleBtn.style.background = "var(--primary-color)";
+                ruleBtn.style.color = "#333";
+                ruleBtn.style.borderColor = "var(--primary-dark)";
+
+                // Store selected detail
+                selectedRuleDetails = `${rule.label} - ${rule.price}`;
+            };
+
+            rulesContainer.appendChild(ruleBtn);
+        });
+
+        content.appendChild(rulesContainer);
+    }
+
     // Button Logic
     const btn = document.createElement("a");
     btn.href = "javascript:void(0)";
@@ -110,14 +165,9 @@ function renderProducts(section, containerId, filters = {}) {
       icon.style.marginRight = "8px";
       btn.appendChild(icon);
 
-      if (section === "baloes") {
-        btn.appendChild(document.createTextNode(" Encomendar"));
-        btn.onclick = () => sendWhatsAppMessage(product.name, "balao");
-      } else {
-        btn.appendChild(document.createTextNode(" Pedir no WhatsApp"));
-        // Pass the section as type, sendWhatsAppMessage handles non-curso as generic order
-        btn.onclick = () => sendWhatsAppMessage(product.name, section);
-      }
+      btn.appendChild(document.createTextNode(" Pedir no WhatsApp"));
+      // Pass the section as type, sendWhatsAppMessage handles non-curso as generic order
+      btn.onclick = () => sendWhatsAppMessage(product.name, section, selectedRuleDetails);
     }
 
     content.appendChild(btn);
