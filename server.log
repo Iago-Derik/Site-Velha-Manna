@@ -1,0 +1,8 @@
+127.0.0.1 - - [12/Feb/2026 21:48:06] "GET /feminino.html HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /img/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /js/data.js HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /js/storage.js HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /js/render.js HTTP/1.1" 200 -
+127.0.0.1 - - [12/Feb/2026 21:48:07] "GET /fonts/Milky%20Blend.woff2 HTTP/1.1" 200 -

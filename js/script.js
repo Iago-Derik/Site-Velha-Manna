@@ -1,5 +1,5 @@
 function sendWhatsAppMessage(itemName, type, customDetails = null, imageUrl = null) {
-  const phoneNumber = "5519988404110";
+  const phoneNumber = "";
   let message = "";
 
   if (type === "curso") {
@@ -7,16 +7,6 @@ function sendWhatsAppMessage(itemName, type, customDetails = null, imageUrl = nu
   } else {
     let detailsPart = customDetails ? ` de ${customDetails}` : "";
     message = `Olá, tenho interesse em ${itemName}${detailsPart}!`;
-  }
-
-  if (imageUrl) {
-    let fullUrl = imageUrl;
-    try {
-      fullUrl = new URL(imageUrl, window.location.href).href;
-    } catch (e) {
-      console.error("Invalid URL:", imageUrl);
-    }
-    message = `${fullUrl}\n\n${message}`;
   }
 
   const encodedMessage = encodeURIComponent(message);
