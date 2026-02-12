@@ -17,7 +17,13 @@ function getSiteConfig() {
 }
 
 function saveSiteConfig(config) {
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+    try {
+        localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        return true;
+    } catch (e) {
+        console.error("Error saving site config", e);
+        return false;
+    }
 }
 
 function getUsers() {
@@ -39,7 +45,13 @@ function getUsers() {
 }
 
 function saveUsers(users) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    try {
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        return true;
+    } catch (e) {
+        console.error("Error saving users", e);
+        return false;
+    }
 }
 
 function addUser(username, password) {
@@ -48,8 +60,7 @@ function addUser(username, password) {
         return false; // User already exists
     }
     users.push({ username, password });
-    saveUsers(users);
-    return true;
+    return saveUsers(users);
 }
 
 function deleteUser(username) {
@@ -60,8 +71,7 @@ function deleteUser(username) {
     // but typically we don't want to delete the last admin.
     // However, the current logic re-creates 'admin' on reload if empty.
     if (users.length !== initialLength) {
-        saveUsers(users);
-        return true;
+        return saveUsers(users);
     }
     return false;
 }
@@ -85,7 +95,13 @@ function getProducts() {
 }
 
 function saveProducts(products) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+        return true;
+    } catch (e) {
+        console.error("Error saving products", e);
+        return false;
+    }
 }
 
 function addProduct(product) {
@@ -94,8 +110,10 @@ function addProduct(product) {
     const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
     product.id = newId;
     products.push(product);
-    saveProducts(products);
-    return product;
+    if (saveProducts(products)) {
+        return product;
+    }
+    return false;
 }
 
 function updateProduct(id, updatedProduct) {
@@ -104,8 +122,7 @@ function updateProduct(id, updatedProduct) {
     if (index !== -1) {
         // Merge existing fields with updates to avoid losing data if partial update
         products[index] = { ...products[index], ...updatedProduct };
-        saveProducts(products);
-        return true;
+        return saveProducts(products);
     }
     return false;
 }
@@ -115,8 +132,7 @@ function deleteProduct(id) {
     const initialLength = products.length;
     products = products.filter(p => p.id !== parseInt(id));
     if (products.length !== initialLength) {
-        saveProducts(products);
-        return true;
+        return saveProducts(products);
     }
     return false;
 }
@@ -137,7 +153,13 @@ function getInvites() {
 }
 
 function saveInvites(invites) {
-    localStorage.setItem(INVITES_KEY, JSON.stringify(invites));
+    try {
+        localStorage.setItem(INVITES_KEY, JSON.stringify(invites));
+        return true;
+    } catch (e) {
+        console.error("Error saving invites", e);
+        return false;
+    }
 }
 
 function addInvite(email) {
@@ -164,8 +186,7 @@ function consumeInvite(token) {
     const initialLength = invites.length;
     invites = invites.filter(i => i.token !== token);
     if (invites.length !== initialLength) {
-        saveInvites(invites);
-        return true;
+        return saveInvites(invites);
     }
     return false;
 }

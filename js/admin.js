@@ -362,30 +362,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const saveProduct = (imageUrl) => {
       productData.image = imageUrl;
+      let success = false;
 
       if (id) {
-        updateProduct(id, productData);
+        success = updateProduct(id, productData);
       } else {
-        addProduct(productData);
+        success = addProduct(productData);
       }
 
-      modal.classList.add("hidden");
-      // Trigger re-render in other tabs by updating a small timestamp key
-      try {
-        localStorage.setItem(
-          "products_data_last_change",
-          Date.now().toString(),
-        );
-      } catch (e) {}
-      renderAdminProducts();
+      if (success) {
+        modal.classList.add("hidden");
+        // Trigger re-render in other tabs by updating a small timestamp key
+        try {
+          localStorage.setItem(
+            "products_data_last_change",
+            Date.now().toString(),
+          );
+        } catch (e) {}
+        renderAdminProducts();
+      } else {
+        alert("Erro ao salvar produto. Verifique se o armazenamento do navegador está cheio ou tente usar uma imagem menor.");
+      }
     };
 
     if (fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      if (file.size > 1024 * 1024) {
+        alert("A imagem é muito grande (>1MB). Por favor, use uma imagem menor.");
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function (e) {
         saveProduct(e.target.result);
       };
-      reader.readAsDataURL(fileInput.files[0]);
+      reader.readAsDataURL(file);
     } else {
       saveProduct(imageInput.value);
     }
