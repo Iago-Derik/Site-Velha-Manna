@@ -609,6 +609,39 @@ body.masculino-theme .section-title span {
   }
 }
 
+/* Remove banner decorations/animations site-wide (user requested no animations/images on banners) */
+.home-page .banner-card::before {
+  display: none !important;
+  animation: none !important;
+  background-image: none !important;
+}
+
+/* Make the hero section shorter on small screens so it doesn't fill the whole viewport
+   Reduce spacing between logo and button specifically for mobile devices */
+@media (max-width: 600px) {
+  .home-page #hero {
+    padding: 1.6rem 1rem !important;
+  }
+  .home-page .hero-logo {
+    max-width: 160px;
+    width: 60%;
+    margin-bottom: 0.8rem;
+  }
+  .home-page #hero h2 {
+    font-size: 1.6rem !important;
+    margin-bottom: 0.6rem;
+  }
+  .home-page #hero p {
+    font-size: 0.95rem !important;
+    margin-bottom: 0.8rem;
+    max-width: 100%;
+  }
+  .home-page #hero .btn {
+    padding: 10px 16px;
+    min-width: 140px;
+  }
+}
+
 /* Desktop-only: place logo on the right without affecting mobile layout */
 @media (min-width: 901px) {
   .navbar-container {
