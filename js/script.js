@@ -1,5 +1,6 @@
 function sendWhatsAppMessage(itemName, type, customDetails = null, imageUrl = null) {
-  const phoneNumber = "";
+  const config = (typeof getSiteConfig === 'function') ? getSiteConfig() : {};
+  const phoneNumber = config.whatsappNumber || "5519988404110";
   let message = "";
 
   if (type === "curso") {
@@ -68,6 +69,21 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.style.backgroundSize = 'cover';
           document.body.style.backgroundAttachment = 'fixed';
       }
+
+      // Update Static WhatsApp Links
+      const whatsappNumber = config.whatsappNumber || "5519988404110";
+      document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp.com"]').forEach(link => {
+          let href = link.href;
+          if (href.includes('wa.me/')) {
+              // Replace wa.me/NUMBER with wa.me/NEW_NUMBER
+              href = href.replace(/wa\.me\/\d+/, `wa.me/${whatsappNumber}`);
+          } else if (href.includes('whatsapp.com')) {
+              // Less common but possible: whatsapp.com/send?phone=NUMBER
+              // Simple replace for phone=\d+
+              href = href.replace(/phone=\d+/, `phone=${whatsappNumber}`);
+          }
+          link.href = href;
+      });
       /*
       if (config.banners) {
           const setBannerBg = (id, bg) => {

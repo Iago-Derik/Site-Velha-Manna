@@ -443,6 +443,9 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("site-logo-url").value = config.logoUrl || "";
       delete document.getElementById("site-logo-url").dataset.isBase64;
     }
+
+    // WhatsApp Number
+    document.getElementById("whatsapp-number").value = config.whatsappNumber || "5519988404110";
   }
 
   // Helper to read file as Data URL
@@ -466,8 +469,11 @@ document.addEventListener("DOMContentLoaded", () => {
         logoUrlValue = oldConfig.logoUrl;
       }
 
+      const whatsappNumber = document.getElementById("whatsapp-number").value.replace(/\D/g, "");
+
       const config = {
         logoUrl: logoUrlValue,
+        whatsappNumber: whatsappNumber || "5519988404110",
         // pageBgUrl and banners removed
       };
 
