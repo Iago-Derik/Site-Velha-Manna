@@ -1197,15 +1197,63 @@ body:not(.home-page) a[href*="whatsapp"] {
   font-weight: 600;
 }
 
-/* Price rule buttons: prevent 'visited/active' color change and make background slightly more visible */
-.price-rules-buttons button {
-  color: var(--text-color) !important;
-  background: #f2f2f2 !important; /* slightly darker than before */
-  border: 1px solid #e0e0e0 !important;
+/* Price Rules Buttons */
+.rule-btn {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: var(--text-color);
 }
-.price-rules-buttons button:focus,
-.price-rules-buttons button:active {
-  color: var(--text-color) !important;
-  outline: none !important;
-  box-shadow: none !important;
+
+.rule-btn:hover {
+  background: #eee;
+}
+
+.rule-btn:focus,
+.rule-btn:active {
+  outline: none;
+}
+
+.rule-btn.selected {
+  /* Default selected style if no section matches */
+  background: var(--primary-color);
+  color: #333;
+  border-color: var(--primary-dark);
+}
+
+/* Section specific selected colors */
+.rule-btn.selected.section-feminino {
+  background-color: #f8bbd0;
+  border-color: #f48fb1;
+}
+
+.rule-btn.selected.section-masculino {
+  background-color: #b3e5fc;
+  border-color: #81d4fa;
+}
+
+.rule-btn.selected.section-baloes {
+  background-color: #fff59d;
+  border-color: #ffe082;
+}
+
+.rule-btn.selected.section-mobile {
+  background-color: #ffd8a8;
+  border-color: #ffcc80;
+}
+
+.rule-btn.selected.section-lembrancinhas,
+.rule-btn.selected.section-amigurumis {
+  background-color: #c8e6c9;
+  border-color: #a5d6a7;
+}
+
+.rule-btn.selected.section-cursos {
+  background-color: #e1bee7;
+  border-color: #ce93d8;
 }

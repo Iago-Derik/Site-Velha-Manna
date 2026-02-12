@@ -119,15 +119,9 @@ function renderProducts(section, containerId, filters = {}) {
 
       product.priceRules.forEach((rule) => {
         const ruleBtn = document.createElement("button");
-        // Basic styling for rule buttons
-        ruleBtn.style.padding = "6px 10px";
-        ruleBtn.style.fontSize = "0.8rem";
-        ruleBtn.style.borderRadius = "8px";
-        ruleBtn.style.border = "1px solid #ddd";
-        ruleBtn.style.background = "#f9f9f9";
-        ruleBtn.style.cursor = "pointer";
-        ruleBtn.style.transition = "all 0.2s";
-        ruleBtn.style.fontFamily = "inherit";
+        // Use CSS classes instead of inline styles
+        const sectionClass = `section-${targetSection}`;
+        ruleBtn.className = `rule-btn ${sectionClass}`;
         ruleBtn.textContent = rule.label;
 
         ruleBtn.onclick = () => {
@@ -140,13 +134,9 @@ function renderProducts(section, containerId, filters = {}) {
 
           // Highlight button
           Array.from(rulesContainer.children).forEach((btn) => {
-            btn.style.background = "#f9f9f9";
-            btn.style.color = "var(--text-color)";
-            btn.style.borderColor = "#ddd";
+            btn.classList.remove("selected");
           });
-          ruleBtn.style.background = "var(--primary-color)";
-          ruleBtn.style.color = "#333";
-          ruleBtn.style.borderColor = "var(--primary-dark)";
+          ruleBtn.classList.add("selected");
 
           // Store selected detail
           selectedRuleDetails = `${rule.label} - ${rule.price}`;
