@@ -139,7 +139,7 @@ function renderProducts(section, containerId, filters = {}) {
           ruleBtn.classList.add("selected");
 
           // Store selected detail
-          selectedRuleDetails = `${rule.label} - ${rule.price}`;
+          selectedRuleDetails = rule.label;
         };
 
         rulesContainer.appendChild(ruleBtn);
@@ -156,7 +156,8 @@ function renderProducts(section, containerId, filters = {}) {
     if (section === "cursos") {
       btn.classList.add("btn-secondary");
       btn.textContent = "Quero saber mais";
-      btn.onclick = () => sendWhatsAppMessage(product.name, "curso");
+      btn.onclick = () =>
+        sendWhatsAppMessage(product.name, "curso", null, product.image);
     } else {
       // Add icon for non-course items
       const icon = document.createElement("i");
@@ -167,7 +168,12 @@ function renderProducts(section, containerId, filters = {}) {
       btn.appendChild(document.createTextNode(" Pedir no WhatsApp"));
       // Pass the section as type, sendWhatsAppMessage handles non-curso as generic order
       btn.onclick = () =>
-        sendWhatsAppMessage(product.name, section, selectedRuleDetails);
+        sendWhatsAppMessage(
+          product.name,
+          section,
+          selectedRuleDetails,
+          product.image,
+        );
     }
 
     content.appendChild(btn);
