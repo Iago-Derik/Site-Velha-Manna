@@ -413,6 +413,7 @@ body.masculino-theme .section-title span {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5; /* adjust number of visible lines here */
+  line-clamp: 5;
   overflow: hidden;
 }
 .card-btn {
