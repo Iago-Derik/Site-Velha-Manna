@@ -190,3 +190,35 @@ function consumeInvite(token) {
     }
     return false;
 }
+
+// Access Logs
+const LOGS_KEY = 'admin_logs';
+
+function getLogs() {
+    const storedLogs = localStorage.getItem(LOGS_KEY);
+    if (storedLogs) {
+        try {
+            return JSON.parse(storedLogs);
+        } catch (e) {
+            console.error("Error parsing logs", e);
+            return [];
+        }
+    }
+    return [];
+}
+
+function saveLog(logEntry) {
+    const logs = getLogs();
+    // Keep only last 100 logs to avoid storage issues
+    if (logs.length >= 100) {
+        logs.shift(); // Remove oldest
+    }
+    logs.push(logEntry);
+    try {
+        localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
+        return true;
+    } catch (e) {
+        console.error("Error saving log", e);
+        return false;
+    }
+}

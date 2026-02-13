@@ -48,9 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const navProductsBtn = document.getElementById("nav-products");
   const navUsersBtn = document.getElementById("nav-users");
   const navSettingsBtn = document.getElementById("nav-settings");
+  const navLogsBtn = document.getElementById("nav-logs"); // Added
   const productsView = document.getElementById("products-view");
   const usersView = document.getElementById("users-view");
   const settingsView = document.getElementById("settings-view");
+  const logsView = document.getElementById("logs-view"); // Added
+  const logsList = document.getElementById("logs-list"); // Added
   const addUserForm = document.getElementById("add-user-form");
   const userList = document.getElementById("user-list");
   const saveSettingsForm = document.getElementById("settings-form");
@@ -166,6 +169,28 @@ document.addEventListener("DOMContentLoaded", () => {
       sessionStorage.setItem("isLoggedIn", "true");
       sessionStorage.setItem("currentUser", user);
       loginError.style.display = "none";
+
+      // Log Access
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          saveLog({
+            timestamp: new Date().toLocaleString(),
+            username: user,
+            ip: data.ip,
+            action: 'Login'
+          });
+        })
+        .catch(err => {
+          console.error("IP fetch error", err);
+          saveLog({
+            timestamp: new Date().toLocaleString(),
+            username: user,
+            ip: 'Desconhecido (Erro API)',
+            action: 'Login'
+          });
+        });
+
       checkLogin();
     } else {
       loginError.style.display = "block";
@@ -402,8 +427,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
-      // Resize to max 800x800 and compress
-      resizeImage(file, 800, 800, 0.8)
+      // Resize to max 600x600 and compress more aggressively to save space
+      resizeImage(file, 600, 600, 0.6)
         .then((resizedDataUrl) => {
           saveProduct(resizedDataUrl);
         })
@@ -421,18 +446,24 @@ document.addEventListener("DOMContentLoaded", () => {
     productsView.classList.remove("hidden");
     usersView.classList.add("hidden");
     settingsView.classList.add("hidden");
+    logsView.classList.add("hidden");
+
     navProductsBtn.style.backgroundColor = "var(--primary-color)";
     navUsersBtn.style.backgroundColor = "#ddd";
     navSettingsBtn.style.backgroundColor = "#ddd";
+    navLogsBtn.style.backgroundColor = "#ddd";
   });
 
   navUsersBtn.addEventListener("click", () => {
     productsView.classList.add("hidden");
     usersView.classList.remove("hidden");
     settingsView.classList.add("hidden");
+    logsView.classList.add("hidden");
+
     navUsersBtn.style.backgroundColor = "var(--primary-color)";
     navProductsBtn.style.backgroundColor = "#ddd";
     navSettingsBtn.style.backgroundColor = "#ddd";
+    navLogsBtn.style.backgroundColor = "#ddd";
     renderUsers();
   });
 
@@ -440,11 +471,50 @@ document.addEventListener("DOMContentLoaded", () => {
     productsView.classList.add("hidden");
     usersView.classList.add("hidden");
     settingsView.classList.remove("hidden");
+    logsView.classList.add("hidden");
+
     navSettingsBtn.style.backgroundColor = "var(--primary-color)";
     navProductsBtn.style.backgroundColor = "#ddd";
     navUsersBtn.style.backgroundColor = "#ddd";
+    navLogsBtn.style.backgroundColor = "#ddd";
     renderSettings();
   });
+
+  // Logs Logic
+  navLogsBtn.addEventListener("click", () => {
+    productsView.classList.add("hidden");
+    usersView.classList.add("hidden");
+    settingsView.classList.add("hidden");
+    logsView.classList.remove("hidden");
+
+    navLogsBtn.style.backgroundColor = "var(--primary-color)";
+    navProductsBtn.style.backgroundColor = "#ddd";
+    navUsersBtn.style.backgroundColor = "#ddd";
+    navSettingsBtn.style.backgroundColor = "#ddd";
+    renderLogs();
+  });
+
+  function renderLogs() {
+    const logs = getLogs();
+    if (!logsList) return;
+    logsList.innerHTML = "";
+
+    // Reverse to show newest first
+    logs.reverse().forEach(log => {
+        const tr = document.createElement("tr");
+        const ip = log.ip || "Desconhecido";
+        // Link to IP info
+        const ipDisplay = ip.includes("Desconhecido") ? ip : `<a href="https://whatismyipaddress.com/ip/${ip}" target="_blank" style="color: blue; text-decoration: underline;">${ip}</a>`;
+
+        tr.innerHTML = `
+            <td>${log.timestamp || '-'}</td>
+            <td>${log.username || '-'}</td>
+            <td>${ipDisplay}</td>
+            <td>${log.action || 'Acesso'}</td>
+        `;
+        logsList.appendChild(tr);
+    });
+  }
 
   // Settings Logic
   function renderSettings() {
@@ -595,6 +665,67 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Erro: Usuário já existe.");
     }
   });
+
+  // Backup Logic
+  const exportBtn = document.getElementById("export-btn");
+  const importFile = document.getElementById("import-file");
+
+  if (exportBtn) {
+    exportBtn.addEventListener("click", () => {
+      const config = getSiteConfig();
+      const products = getProducts();
+      const users = getUsers();
+      const invites = getInvites();
+
+      const backupData = {
+        config,
+        products,
+        users,
+        invites,
+        backupDate: new Date().toISOString()
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "backup_site_vendas_" + new Date().toISOString().slice(0, 10) + ".json");
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    });
+  }
+
+  if (importFile) {
+    importFile.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!confirm("Isso substituirá TODOS os dados atuais (Produtos, Usuários, Configurações). Deseja continuar?")) {
+        event.target.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = e.target.result;
+          const data = JSON.parse(content);
+
+          if (data.products) saveProducts(data.products);
+          if (data.users) saveUsers(data.users);
+          if (data.config) saveSiteConfig(data.config);
+          if (data.invites) saveInvites(data.invites);
+
+          alert("Backup restaurado com sucesso! A página será recarregada.");
+          window.location.reload();
+        } catch (error) {
+          console.error("Erro ao importar backup:", error);
+          alert("Erro ao ler o arquivo de backup. Verifique se é um JSON válido.");
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
 
   // Initialize
   checkLogin();
