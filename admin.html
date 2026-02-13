@@ -247,6 +247,7 @@
                         <button id="nav-products" class="btn" style="background-color: var(--primary-color);">Produtos</button>
                         <button id="nav-users" class="btn" style="background-color: #ddd; color: #333;">Usuários</button>
                         <button id="nav-settings" class="btn" style="background-color: #ddd; color: #333;">Configurações</button>
+                        <button id="nav-logs" class="btn" style="background-color: #ddd; color: #333;">Logs</button>
                     </div>
                 </div>
 
@@ -336,6 +337,49 @@
 
                         <button type="submit" class="btn">Salvar Configurações</button>
                     </form>
+
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #ddd;">
+                        <h3 style="margin-bottom: 1rem;">Backup e Restauração</h3>
+                        <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                            Exporte seus dados para salvar uma cópia de segurança ou restaurar em outro dispositivo.
+                            Importar um backup substituirá TODOS os dados atuais.
+                        </p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <button type="button" id="export-btn" class="btn" style="background-color: #4caf50; flex: 1; max-width: 200px;">
+                                <i class="fas fa-download"></i> Exportar Dados
+                            </button>
+
+                            <label for="import-file" class="btn" style="background-color: #2196f3; flex: 1; max-width: 200px; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                <i class="fas fa-upload"></i> Importar Dados
+                            </label>
+                            <input type="file" id="import-file" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs View -->
+                <div id="logs-view" class="hidden">
+                    <h3 style="margin-bottom: 1rem;">Histórico de Acessos Locais (Admin)</h3>
+                    <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                        Estes registros mostram logins administrativos realizados <strong>neste navegador/dispositivo</strong>.
+                        Devido à natureza estática do site, não é possível rastrear acessos de outros dispositivos sem um banco de dados externo.
+                        Para ver a região, clique no IP (Redireciona para serviço externo).
+                    </p>
+                    <div style="overflow-x: auto;">
+                        <table class="product-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Usuário</th>
+                                    <th>IP</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-list">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
