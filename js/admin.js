@@ -292,6 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const idInput = document.getElementById("product-id");
     const nameInput = document.getElementById("product-name");
     const imageInput = document.getElementById("product-image");
+    const fileInput = document.getElementById("product-image-file");
     const descInput = document.getElementById("product-desc");
     const sectionInput = document.getElementById("product-section");
     const priceInput = document.getElementById("product-price");
@@ -322,6 +323,8 @@ document.addEventListener("DOMContentLoaded", () => {
       modalTitle.textContent = "Adicionar Produto";
       idInput.value = "";
       productForm.reset();
+      imageInput.value = "";
+      fileInput.value = "";
       // Reset price rules container is already done above
     }
 
