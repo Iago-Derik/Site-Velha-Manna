@@ -399,15 +399,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
-      if (file.size > 1024 * 1024) {
-        alert("A imagem é muito grande (>1MB). Por favor, use uma imagem menor.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        saveProduct(e.target.result);
-      };
-      reader.readAsDataURL(file);
+      // Resize to max 800x800 and compress
+      resizeImage(file, 800, 800, 0.8)
+        .then((resizedDataUrl) => {
+          saveProduct(resizedDataUrl);
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Erro ao processar imagem. Tente novamente ou use uma imagem menor.");
+        });
     } else {
       saveProduct(imageInput.value);
     }
@@ -596,3 +596,42 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize
   checkLogin();
 });
+
+// Image Resize Helper
+function resizeImage(file, maxWidth, maxHeight, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        let width = img.width;
+        let height = img.height;
+
+        // Calculate new dimensions
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to JPEG with quality
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = function() {
+        reject(new Error("Erro ao carregar imagem para redimensionamento."));
+      };
+      img.src = e.target.result;
+    };
+    reader.onerror = function(e) {
+      reject(new Error("Erro ao ler arquivo."));
+    };
+    reader.readAsDataURL(file);
+  });
+}
