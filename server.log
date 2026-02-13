@@ -1,0 +1,7 @@
+127.0.0.1 - - [13/Feb/2026 02:02:44] "GET /admin.html HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2026 02:02:45] "GET /css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2026 02:02:45] "GET /img/logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2026 02:02:45] "GET /js/data.js HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2026 02:02:45] "GET /js/storage.js HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2026 02:02:45] "GET /js/admin.js HTTP/1.1" 200 -
+127.0.0.1 - - [13/Feb/2026 02:02:45] "GET /admin.html HTTP/1.1" 304 -
