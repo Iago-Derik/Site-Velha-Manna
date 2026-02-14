@@ -409,12 +409,6 @@ body.masculino-theme .section-title span {
 .card-desc {
   margin-bottom: 0.6rem;
   word-break: break-word;
-  /* Clamp description to fixed number of lines so cards align */
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5; /* adjust number of visible lines here */
-  line-clamp: 5;
-  overflow: hidden;
 }
 .card-btn {
   margin-top: auto; /* push button to the bottom of the card */
