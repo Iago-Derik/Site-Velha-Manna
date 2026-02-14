@@ -427,8 +427,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
-      // Resize to max 600x600 and compress more aggressively to save space
-      resizeImage(file, 600, 600, 0.6)
+      // Resize to max 800x800 and compress less aggressively to improve quality
+      resizeImage(file, 800, 800, 0.8)
         .then((resizedDataUrl) => {
           saveProduct(resizedDataUrl);
         })
