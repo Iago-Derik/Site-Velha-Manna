@@ -1,3 +1,13 @@
+// --- Realtime Sync Support ---
+let lastRenderArgs = null;
+
+window.addEventListener('storage-updated', (e) => {
+    if (e.detail && e.detail.key === 'products_data' && lastRenderArgs) {
+        renderProducts(lastRenderArgs.section, lastRenderArgs.containerId, lastRenderArgs.filters);
+    }
+});
+// -----------------------------
+
 function parsePrice(priceStr) {
   if (!priceStr) return 0;
   // Remove 'R$', spaces, and replace comma with dot
@@ -9,6 +19,9 @@ function parsePrice(priceStr) {
 }
 
 function renderProducts(section, containerId, filters = {}) {
+  // Save context for re-renders on sync
+  lastRenderArgs = { section, containerId, filters };
+
   // Normalize section comparison (case-insensitive) to avoid mismatch issues
   const targetSection = (section || "").toString().toLowerCase();
   let products = getProducts().filter((p) => {
