@@ -1,0 +1,58 @@
+query ListAllBlogPosts @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  blogPosts(orderBy: [{createdAt: DESC}]) {
+    id
+    title
+    imageUrl
+    content
+    createdAt
+    user {
+      id
+      displayName
+    }
+    categories_via_BlogPostCategory {
+      id
+      name
+    }
+  }
+}
+
+query MyProjects @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  projects(where: {userId: {eq_expr: "auth.uid"}}, orderBy: [{createdAt: DESC}]) {
+    id
+    title
+    description
+    projectUrl
+    imageUrl
+    createdAt
+  }
+}
+
+mutation CreateBlogPost($title: String!, $content: String!, $imageUrl: String, $tags: [String!], $categoryIds: [UUID!]) @auth(level: USER) {
+  blogPost: blogPost_insert(data: {
+    title: $title,
+    content: $content,
+    imageUrl: $imageUrl,
+    tags: $tags,
+    userId_expr: "auth.uid",
+    createdAt_expr: "request.time"
+  }) {
+    id
+  }
+  blogPostCategory_insertMany(data: $categoryIds.map(categoryId, blogPostId => ({
+    blogPostId: blogPostId,
+    categoryId: categoryId,
+    createdAt_expr: "request.time"
+  }))) @transaction
+}
+
+mutation UpdateUserProfile($bio: String, $displayName: String, $githubUrl: String, $linkedinUrl: String, $photoUrl: String) @auth(level: USER) {
+  user_update(key: {id_expr: "auth.uid"}, data: {
+    bio: $bio,
+    displayName: $displayName,
+    githubUrl: $githubUrl,
+    linkedinUrl: $linkedinUrl,
+    photoUrl: $photoUrl
+  }) {
+    id
+  }
+}

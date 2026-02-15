@@ -1,0 +1,75 @@
+mutation CreateSeedData @transaction @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  user_insertMany(data: [
+    {
+      id: "b4d7c0f0-1e8c-4f7e-8c0c-0c8f1e8c4f7e",
+      displayName: "Alice Smith",
+      email: "alice.smith@example.com",
+      createdAt: "2023-01-01T10:00:00Z",
+      bio: "Software developer with a passion for open-source.",
+      githubUrl: "https://github.com/alicesmith",
+      linkedinUrl: "https://www.linkedin.com/in/alicesmith"
+    },
+    {
+      id: "e9f2a1b3-5d6c-4e7a-8f9b-1d2c3e4f5a6b",
+      displayName: "Bob Johnson",
+      email: "bob.johnson@example.com",
+      createdAt: "2023-01-05T11:30:00Z",
+      bio: "Product manager always looking for new challenges.",
+      photoUrl: "https://example.com/bob_profile.jpg"
+    }
+  ])
+  category_insertMany(data: [
+    {
+      id: "a1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+      name: "Technology",
+      createdAt: "2023-01-10T12:00:00Z"
+    },
+    {
+      id: "f6g7h8i9-j0k1-2l3m-4n5o-6p7q8r9s0t1u",
+      name: "Productivity",
+      createdAt: "2023-01-12T09:00:00Z"
+    }
+  ])
+  blogPost_insertMany(data: [
+    {
+      id: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      userId: "b4d7c0f0-1e8c-4f7e-8c0c-0c8f1e8c4f7e",
+      title: "My First Blog Post",
+      content: "This is the content of my first blog post about coding.",
+      createdAt: "2023-01-15T14:00:00Z",
+      tags: ["coding", "development"]
+    },
+    {
+      id: "7h8i9j0k-1l2m-3n4o-5p6q-7r8s9t0u1v2w",
+      userId: "e9f2a1b3-5d6c-4e7a-8f9b-1d2c3e4f5a6b",
+      title: "How to Boost Your Productivity",
+      content: "Tips and tricks to stay productive throughout the day.",
+      createdAt: "2023-01-20T16:00:00Z",
+      imageUrl: "https://example.com/productivity_blog.jpg",
+      tags: ["productivity", "tips"]
+    }
+  ])
+  blogPostCategory_insertMany(data: [
+    {
+      blogPostId: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      categoryId: "a1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+      createdAt: "2023-01-15T14:00:00Z"
+    },
+    {
+      blogPostId: "7h8i9j0k-1l2m-3n4o-5p6q-7r8s9t0u1v2w",
+      categoryId: "f6g7h8i9-j0k1-2l3m-4n5o-6p7q8r9s0t1u",
+      createdAt: "2023-01-20T16:00:00Z"
+    }
+  ])
+  project_insertMany(data: [
+    {
+      id: "x1y2z3a4-b5c6-d7e8-f9g0-h1i2j3k4l5m6",
+      userId: "b4d7c0f0-1e8c-4f7e-8c0c-0c8f1e8c4f7e",
+      title: "Open-Source Project Alpha",
+      description: "A new open-source project focused on web development.",
+      createdAt: "2023-02-01T09:00:00Z",
+      projectUrl: "https://github.com/alicesmith/project-alpha",
+      imageUrl: "https://example.com/project_alpha.jpg"
+    }
+  ])
+}
