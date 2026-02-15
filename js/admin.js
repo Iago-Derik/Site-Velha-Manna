@@ -328,6 +328,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Clear rules
     priceRulesContainer.innerHTML = "";
 
+    // Clear file input to avoid using previous selection
+    fileInput.value = "";
+
     if (product) {
       modalTitle.textContent = "Editar Produto";
       idInput.value = product.id;
