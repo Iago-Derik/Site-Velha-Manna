@@ -2,6 +2,64 @@ const STORAGE_KEY = 'products_data';
 const USERS_KEY = 'admin_users';
 const CONFIG_KEY = 'site_config';
 const INVITES_KEY = 'admin_invites';
+const LOGS_KEY = 'admin_logs';
+
+// --- Firebase Sync Logic ---
+let db = null;
+let isSyncing = false; // Prevent feedback loops
+
+if (typeof firebase !== 'undefined' && window.firebaseConfig) {
+    try {
+        firebase.initializeApp(window.firebaseConfig);
+        db = firebase.database();
+        console.log("Firebase initialized and ready for sync.");
+        startSyncListeners();
+    } catch (e) {
+        console.error("Firebase initialization failed:", e);
+    }
+}
+
+function syncToCloud(key, data) {
+    if (!db || isSyncing) return;
+
+    let path = null;
+    if (key === STORAGE_KEY) path = 'products';
+    else if (key === USERS_KEY) path = 'users';
+    else if (key === CONFIG_KEY) path = 'config';
+    else if (key === INVITES_KEY) path = 'invites';
+    else if (key === LOGS_KEY) path = 'logs';
+
+    if (path) {
+        db.ref(path).set(data).catch(e => console.error(`Failed to sync ${path}:`, e));
+    }
+}
+
+function startSyncListeners() {
+    if (!db) return;
+
+    const mappings = [
+        { path: 'products', key: STORAGE_KEY },
+        { path: 'users', key: USERS_KEY },
+        { path: 'config', key: CONFIG_KEY },
+        { path: 'invites', key: INVITES_KEY },
+        { path: 'logs', key: LOGS_KEY }
+    ];
+
+    mappings.forEach(({ path, key }) => {
+        db.ref(path).on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) { // Only update if data exists remotely
+                isSyncing = true;
+                localStorage.setItem(key, JSON.stringify(val));
+                isSyncing = false;
+
+                // Dispatch event for UI updates
+                window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: key } }));
+            }
+        });
+    });
+}
+// ---------------------------
 
 function getSiteConfig() {
     const storedConfig = localStorage.getItem(CONFIG_KEY);
@@ -19,6 +77,7 @@ function getSiteConfig() {
 function saveSiteConfig(config) {
     try {
         localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        syncToCloud(CONFIG_KEY, config);
         return true;
     } catch (e) {
         console.error("Error saving site config", e);
@@ -47,6 +106,7 @@ function getUsers() {
 function saveUsers(users) {
     try {
         localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        syncToCloud(USERS_KEY, users);
         return true;
     } catch (e) {
         console.error("Error saving users", e);
@@ -97,6 +157,7 @@ function getProducts() {
 function saveProducts(products) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+        syncToCloud(STORAGE_KEY, products);
         return true;
     } catch (e) {
         console.error("Error saving products", e);
@@ -155,6 +216,7 @@ function getInvites() {
 function saveInvites(invites) {
     try {
         localStorage.setItem(INVITES_KEY, JSON.stringify(invites));
+        syncToCloud(INVITES_KEY, invites);
         return true;
     } catch (e) {
         console.error("Error saving invites", e);
@@ -192,7 +254,7 @@ function consumeInvite(token) {
 }
 
 // Access Logs
-const LOGS_KEY = 'admin_logs';
+// const LOGS_KEY = 'admin_logs'; // Defined at top
 
 function getLogs() {
     const storedLogs = localStorage.getItem(LOGS_KEY);
@@ -216,6 +278,7 @@ function saveLog(logEntry) {
     logs.push(logEntry);
     try {
         localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
+        syncToCloud(LOGS_KEY, logs);
         return true;
     } catch (e) {
         console.error("Error saving log", e);

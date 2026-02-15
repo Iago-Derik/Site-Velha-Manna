@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const addProductBtn = document.getElementById("add-product-btn");
   const productForm = document.getElementById("product-form");
 
+
   // New Admin Elements
   const addRuleBtn = document.getElementById("add-rule-btn");
   const priceRulesContainer = document.getElementById("price-rules-container");
@@ -726,6 +727,49 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.readAsText(file);
     });
   }
+
+  // --- Sync Logic ---
+  window.addEventListener('storage-updated', (e) => {
+      const key = e.detail ? e.detail.key : null;
+      if (key === 'products_data' && !productsView.classList.contains('hidden')) renderAdminProducts();
+      if (key === 'admin_users' && !usersView.classList.contains('hidden')) renderUsers();
+      if (key === 'site_config' && !settingsView.classList.contains('hidden')) renderSettings();
+      if (key === 'admin_logs' && !logsView.classList.contains('hidden')) renderLogs();
+  });
+
+  // Inject Status into Header
+  const dashboardHeader = document.querySelector('.dashboard-header');
+  if (dashboardHeader) {
+      const statusDiv = document.createElement('div');
+      statusDiv.style.fontSize = '0.85rem';
+      statusDiv.style.marginTop = '0.5rem';
+
+      if (window.firebaseConfig) {
+          statusDiv.innerHTML = '<span style="color: green; font-weight: bold;"><i class="fas fa-cloud"></i> Sync Ativo</span>';
+      } else {
+          statusDiv.innerHTML = '<span style="color: orange; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> Sync Offline</span>';
+          statusDiv.title = "Configure js/firebase-config.js para ativar";
+      }
+      dashboardHeader.appendChild(statusDiv);
+  }
+
+  // Inject Sync Instructions into Settings View
+  if (settingsView) {
+      const syncInfo = document.createElement('div');
+      syncInfo.style.marginTop = "2rem";
+      syncInfo.style.padding = "1rem";
+      syncInfo.style.background = "#e3f2fd";
+      syncInfo.style.borderRadius = "8px";
+      syncInfo.style.border = "1px solid #90caf9";
+      syncInfo.innerHTML = `
+          <h3 style="margin-bottom: 0.5rem; color: #0d47a1; font-size: 1.1rem;"><i class="fas fa-sync"></i> Sincronização em Nuvem</h3>
+          <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Para permitir que alterações sejam vistas por todos os usuários em tempo real, configure o Firebase.</p>
+          <p style="font-size: 0.9rem;">Edite o arquivo <strong>js/firebase-config.js</strong> e adicione as credenciais do seu projeto.</p>
+          <p style="font-size: 0.9rem; margin-top: 0.5rem;">Status: <strong>${window.firebaseConfig ? '<span style="color:green">Conectado</span>' : '<span style="color:red">Desconectado (Salvo apenas neste navegador)</span>'}</strong></p>
+      `;
+      settingsView.appendChild(syncInfo);
+  }
+  // ------------------
 
   // Initialize
   checkLogin();
