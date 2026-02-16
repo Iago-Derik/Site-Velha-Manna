@@ -4,65 +4,115 @@ const CONFIG_KEY = 'site_config';
 const INVITES_KEY = 'admin_invites';
 const LOGS_KEY = 'admin_logs';
 
-// --- Firebase Sync Logic ---
-let db = null;
-let isSyncing = false; // Prevent feedback loops
+// --- Server API helpers ---
+const API_PATH = '/api/data';
 
-if (typeof firebase !== 'undefined' && window.firebaseConfig) {
+// Maps localStorage keys to server API keys
+const KEY_TO_API = {
+    [STORAGE_KEY]: 'products',
+    [USERS_KEY]: 'users',
+    [CONFIG_KEY]: 'config',
+    [INVITES_KEY]: 'invites',
+    [LOGS_KEY]: 'logs'
+};
+
+function apiGet(apiKey) {
+    return fetch(API_PATH + '?key=' + apiKey)
+        .then(function(r) { return r.json(); })
+        .then(function(body) { return body.data; })
+        .catch(function(e) {
+            console.error('API GET error for ' + apiKey + ':', e);
+            return null;
+        });
+}
+
+function apiPut(apiKey, data) {
+    return fetch(API_PATH + '?key=' + apiKey, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: data })
+    })
+    .then(function(r) { return r.json(); })
+    .catch(function(e) {
+        console.error('API PUT error for ' + apiKey + ':', e);
+        return null;
+    });
+}
+
+// Save to both localStorage (cache) and server (source of truth)
+function persistData(localKey, data) {
     try {
-        firebase.initializeApp(window.firebaseConfig);
-        db = firebase.database();
-        console.log("Firebase initialized and ready for sync.");
-        startSyncListeners();
+        localStorage.setItem(localKey, JSON.stringify(data));
     } catch (e) {
-        console.error("Firebase initialization failed:", e);
+        console.error('localStorage write error:', e);
+    }
+    var apiKey = KEY_TO_API[localKey];
+    if (apiKey) {
+        apiPut(apiKey, data);
     }
 }
 
-function syncToCloud(key, data) {
-    if (!db || isSyncing) return;
-
-    let path = null;
-    if (key === STORAGE_KEY) path = 'products';
-    else if (key === USERS_KEY) path = 'users';
-    else if (key === CONFIG_KEY) path = 'config';
-    else if (key === INVITES_KEY) path = 'invites';
-    else if (key === LOGS_KEY) path = 'logs';
-
-    if (path) {
-        db.ref(path).set(data).catch(e => console.error(`Failed to sync ${path}:`, e));
-    }
+// Load from server, update local cache, and notify UI
+function syncFromServer(apiKey, localKey) {
+    return apiGet(apiKey).then(function(serverData) {
+        if (serverData !== null && serverData !== undefined) {
+            try {
+                localStorage.setItem(localKey, JSON.stringify(serverData));
+            } catch (e) {
+                console.error('localStorage write error during sync:', e);
+            }
+            window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: localKey } }));
+        }
+        return serverData;
+    });
 }
 
-function startSyncListeners() {
-    if (!db) return;
-
-    const mappings = [
-        { path: 'products', key: STORAGE_KEY },
-        { path: 'users', key: USERS_KEY },
-        { path: 'config', key: CONFIG_KEY },
-        { path: 'invites', key: INVITES_KEY },
-        { path: 'logs', key: LOGS_KEY }
+// On page load, sync all data from server to local cache.
+// If server has no products, seed it with initial defaults.
+function initServerSync() {
+    var mappings = [
+        { apiKey: 'products', localKey: STORAGE_KEY },
+        { apiKey: 'users', localKey: USERS_KEY },
+        { apiKey: 'config', localKey: CONFIG_KEY },
+        { apiKey: 'invites', localKey: INVITES_KEY },
+        { apiKey: 'logs', localKey: LOGS_KEY }
     ];
 
-    mappings.forEach(({ path, key }) => {
-        db.ref(path).on('value', (snapshot) => {
-            const val = snapshot.val();
-            if (val) { // Only update if data exists remotely
-                isSyncing = true;
-                localStorage.setItem(key, JSON.stringify(val));
-                isSyncing = false;
-
-                // Dispatch event for UI updates
-                window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: key } }));
+    mappings.forEach(function(m) {
+        syncFromServer(m.apiKey, m.localKey).then(function(serverData) {
+            // Seed products on server if empty
+            if (m.apiKey === 'products' && (serverData === null || serverData === undefined)) {
+                if (typeof initialProducts !== 'undefined') {
+                    apiPut('products', initialProducts);
+                }
+            }
+            // Seed default admin user on server if empty
+            if (m.apiKey === 'users' && (serverData === null || serverData === undefined)) {
+                var defaultUsers = [{ username: 'admin', password: 'admin' }];
+                apiPut('users', defaultUsers);
             }
         });
     });
 }
+
+// Start sync on load
+initServerSync();
+
+// Poll server periodically for changes from other admins (every 30s)
+setInterval(function() {
+    var mappings = [
+        { apiKey: 'products', localKey: STORAGE_KEY },
+        { apiKey: 'users', localKey: USERS_KEY },
+        { apiKey: 'config', localKey: CONFIG_KEY }
+    ];
+    mappings.forEach(function(m) {
+        syncFromServer(m.apiKey, m.localKey);
+    });
+}, 30000);
 // ---------------------------
 
 function getSiteConfig() {
-    const storedConfig = localStorage.getItem(CONFIG_KEY);
+    var storedConfig = localStorage.getItem(CONFIG_KEY);
     if (storedConfig) {
         try {
             return JSON.parse(storedConfig);
@@ -76,8 +126,7 @@ function getSiteConfig() {
 
 function saveSiteConfig(config) {
     try {
-        localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-        syncToCloud(CONFIG_KEY, config);
+        persistData(CONFIG_KEY, config);
         return true;
     } catch (e) {
         console.error("Error saving site config", e);
@@ -86,10 +135,10 @@ function saveSiteConfig(config) {
 }
 
 function getUsers() {
-    const storedUsers = localStorage.getItem(USERS_KEY);
+    var storedUsers = localStorage.getItem(USERS_KEY);
     if (storedUsers) {
         try {
-            const users = JSON.parse(storedUsers);
+            var users = JSON.parse(storedUsers);
             if (Array.isArray(users) && users.length > 0) {
                 return users;
             }
@@ -98,15 +147,14 @@ function getUsers() {
         }
     }
     // Default admin user
-    const defaultUsers = [{ username: 'admin', password: 'admin' }];
+    var defaultUsers = [{ username: 'admin', password: 'admin' }];
     saveUsers(defaultUsers);
     return defaultUsers;
 }
 
 function saveUsers(users) {
     try {
-        localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        syncToCloud(USERS_KEY, users);
+        persistData(USERS_KEY, users);
         return true;
     } catch (e) {
         console.error("Error saving users", e);
@@ -115,21 +163,18 @@ function saveUsers(users) {
 }
 
 function addUser(username, password) {
-    const users = getUsers();
-    if (users.some(u => u.username === username)) {
-        return false; // User already exists
+    var users = getUsers();
+    if (users.some(function(u) { return u.username === username; })) {
+        return false;
     }
-    users.push({ username, password });
+    users.push({ username: username, password: password });
     return saveUsers(users);
 }
 
 function deleteUser(username) {
-    let users = getUsers();
-    const initialLength = users.length;
-    users = users.filter(u => u.username !== username);
-    // Ensure at least one user remains? Maybe not necessary as we can always create 'admin' again,
-    // but typically we don't want to delete the last admin.
-    // However, the current logic re-creates 'admin' on reload if empty.
+    var users = getUsers();
+    var initialLength = users.length;
+    users = users.filter(function(u) { return u.username !== username; });
     if (users.length !== initialLength) {
         return saveUsers(users);
     }
@@ -137,7 +182,7 @@ function deleteUser(username) {
 }
 
 function getProducts() {
-    const storedProducts = localStorage.getItem(STORAGE_KEY);
+    var storedProducts = localStorage.getItem(STORAGE_KEY);
     if (storedProducts) {
         try {
             return JSON.parse(storedProducts);
@@ -145,10 +190,14 @@ function getProducts() {
             console.error("Error parsing products", e);
         }
     }
-    // If no products in storage, save the initial ones and return them
-    // Check if initialProducts is defined (from data.js)
+    // If no products in local cache, use initial ones for display only (save to localStorage only).
+    // Server sync will either overwrite with real data or seed the server if empty.
     if (typeof initialProducts !== 'undefined') {
-        saveProducts(initialProducts);
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(initialProducts));
+        } catch (e) {
+            console.error("localStorage write error:", e);
+        }
         return initialProducts;
     }
     return [];
@@ -156,8 +205,7 @@ function getProducts() {
 
 function saveProducts(products) {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-        syncToCloud(STORAGE_KEY, products);
+        persistData(STORAGE_KEY, products);
         return true;
     } catch (e) {
         console.error("Error saving products", e);
@@ -166,9 +214,8 @@ function saveProducts(products) {
 }
 
 function addProduct(product) {
-    const products = getProducts();
-    // Generate a new ID (max id + 1)
-    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    var products = getProducts();
+    var newId = products.length > 0 ? Math.max.apply(null, products.map(function(p) { return p.id; })) + 1 : 1;
     product.id = newId;
     products.push(product);
     if (saveProducts(products)) {
@@ -178,20 +225,25 @@ function addProduct(product) {
 }
 
 function updateProduct(id, updatedProduct) {
-    const products = getProducts();
-    const index = products.findIndex(p => p.id === parseInt(id));
+    var products = getProducts();
+    var index = products.findIndex(function(p) { return p.id === parseInt(id); });
     if (index !== -1) {
-        // Merge existing fields with updates to avoid losing data if partial update
-        products[index] = { ...products[index], ...updatedProduct };
+        var existing = products[index];
+        for (var key in updatedProduct) {
+            if (updatedProduct.hasOwnProperty(key)) {
+                existing[key] = updatedProduct[key];
+            }
+        }
+        products[index] = existing;
         return saveProducts(products);
     }
     return false;
 }
 
 function deleteProduct(id) {
-    let products = getProducts();
-    const initialLength = products.length;
-    products = products.filter(p => p.id !== parseInt(id));
+    var products = getProducts();
+    var initialLength = products.length;
+    products = products.filter(function(p) { return p.id !== parseInt(id); });
     if (products.length !== initialLength) {
         return saveProducts(products);
     }
@@ -201,7 +253,7 @@ function deleteProduct(id) {
 // Invite System Logic
 
 function getInvites() {
-    const storedInvites = localStorage.getItem(INVITES_KEY);
+    var storedInvites = localStorage.getItem(INVITES_KEY);
     if (storedInvites) {
         try {
             return JSON.parse(storedInvites);
@@ -215,8 +267,7 @@ function getInvites() {
 
 function saveInvites(invites) {
     try {
-        localStorage.setItem(INVITES_KEY, JSON.stringify(invites));
-        syncToCloud(INVITES_KEY, invites);
+        persistData(INVITES_KEY, invites);
         return true;
     } catch (e) {
         console.error("Error saving invites", e);
@@ -225,12 +276,11 @@ function saveInvites(invites) {
 }
 
 function addInvite(email) {
-    const invites = getInvites();
-    // Simple token generation
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    const invite = {
-        email,
-        token,
+    var invites = getInvites();
+    var token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    var invite = {
+        email: email,
+        token: token,
         createdAt: new Date().toISOString()
     };
     invites.push(invite);
@@ -239,14 +289,14 @@ function addInvite(email) {
 }
 
 function validateInvite(token) {
-    const invites = getInvites();
-    return invites.find(i => i.token === token);
+    var invites = getInvites();
+    return invites.find(function(i) { return i.token === token; });
 }
 
 function consumeInvite(token) {
-    let invites = getInvites();
-    const initialLength = invites.length;
-    invites = invites.filter(i => i.token !== token);
+    var invites = getInvites();
+    var initialLength = invites.length;
+    invites = invites.filter(function(i) { return i.token !== token; });
     if (invites.length !== initialLength) {
         return saveInvites(invites);
     }
@@ -254,10 +304,9 @@ function consumeInvite(token) {
 }
 
 // Access Logs
-// const LOGS_KEY = 'admin_logs'; // Defined at top
 
 function getLogs() {
-    const storedLogs = localStorage.getItem(LOGS_KEY);
+    var storedLogs = localStorage.getItem(LOGS_KEY);
     if (storedLogs) {
         try {
             return JSON.parse(storedLogs);
@@ -270,15 +319,13 @@ function getLogs() {
 }
 
 function saveLog(logEntry) {
-    const logs = getLogs();
-    // Keep only last 100 logs to avoid storage issues
+    var logs = getLogs();
     if (logs.length >= 100) {
-        logs.shift(); // Remove oldest
+        logs.shift();
     }
     logs.push(logEntry);
     try {
-        localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
-        syncToCloud(LOGS_KEY, logs);
+        persistData(LOGS_KEY, logs);
         return true;
     } catch (e) {
         console.error("Error saving log", e);
