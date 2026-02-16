@@ -746,13 +746,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const statusDiv = document.createElement('div');
       statusDiv.style.fontSize = '0.85rem';
       statusDiv.style.marginTop = '0.5rem';
-
-      if (window.firebaseConfig) {
-          statusDiv.innerHTML = '<span style="color: green; font-weight: bold;"><i class="fas fa-cloud"></i> Sync Ativo</span>';
-      } else {
-          statusDiv.innerHTML = '<span style="color: orange; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> Sync Offline</span>';
-          statusDiv.title = "Configure js/firebase-config.js para ativar";
-      }
+      statusDiv.innerHTML = '<span style="color: green; font-weight: bold;"><i class="fas fa-cloud"></i> Sync Ativo (Servidor)</span>';
       dashboardHeader.appendChild(statusDiv);
   }
 
@@ -766,9 +760,8 @@ document.addEventListener("DOMContentLoaded", () => {
       syncInfo.style.border = "1px solid #90caf9";
       syncInfo.innerHTML = `
           <h3 style="margin-bottom: 0.5rem; color: #0d47a1; font-size: 1.1rem;"><i class="fas fa-sync"></i> Sincronização em Nuvem</h3>
-          <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Para permitir que alterações sejam vistas por todos os usuários em tempo real, configure o Firebase.</p>
-          <p style="font-size: 0.9rem;">Edite o arquivo <strong>js/firebase-config.js</strong> e adicione as credenciais do seu projeto.</p>
-          <p style="font-size: 0.9rem; margin-top: 0.5rem;">Status: <strong>${window.firebaseConfig ? '<span style="color:green">Conectado</span>' : '<span style="color:red">Desconectado (Salvo apenas neste navegador)</span>'}</strong></p>
+          <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Os dados são salvos automaticamente no servidor. Todas as alterações feitas por qualquer admin são compartilhadas entre todos os usuários.</p>
+          <p style="font-size: 0.9rem; margin-top: 0.5rem;">Status: <strong><span style="color:green">Conectado ao Servidor</span></strong></p>
       `;
       settingsView.appendChild(syncInfo);
   }
