@@ -4,11 +4,17 @@ const CONFIG_KEY = 'site_config';
 const INVITES_KEY = 'admin_invites';
 const LOGS_KEY = 'admin_logs';
 
-// --- Server API helpers ---
-const API_PATH = '/api/data';
+// Firebase Database Reference
+let db = null;
+if (typeof firebase !== 'undefined' && window.firebaseConfig) {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(window.firebaseConfig);
+    }
+    db = firebase.database();
+}
 
-// Maps localStorage keys to server API keys
-const KEY_TO_API = {
+// Map localStorage keys to Firebase paths
+const KEY_MAP = {
     [STORAGE_KEY]: 'products',
     [USERS_KEY]: 'users',
     [CONFIG_KEY]: 'config',
@@ -16,100 +22,73 @@ const KEY_TO_API = {
     [LOGS_KEY]: 'logs'
 };
 
-function apiGet(apiKey) {
-    return fetch(API_PATH + '?key=' + apiKey)
-        .then(function(r) { return r.json(); })
-        .then(function(body) { return body.data; })
-        .catch(function(e) {
-            console.error('API GET error for ' + apiKey + ':', e);
-            return null;
-        });
-}
-
-function apiPut(apiKey, data) {
-    return fetch(API_PATH + '?key=' + apiKey, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: data })
-    })
-    .then(function(r) { return r.json(); })
-    .catch(function(e) {
-        console.error('API PUT error for ' + apiKey + ':', e);
-        return null;
-    });
-}
-
-// Save to both localStorage (cache) and server (source of truth)
+// Save to both localStorage (cache) and Firebase (source of truth)
 function persistData(localKey, data) {
     try {
         localStorage.setItem(localKey, JSON.stringify(data));
     } catch (e) {
         console.error('localStorage write error:', e);
     }
-    var apiKey = KEY_TO_API[localKey];
-    if (apiKey) {
-        apiPut(apiKey, data);
+
+    if (db) {
+        const apiKey = KEY_MAP[localKey];
+        if (apiKey) {
+            db.ref(apiKey).set(data).catch(function(e) { console.error('Firebase set error:', e); });
+        }
     }
 }
 
-// Load from server, update local cache, and notify UI
-function syncFromServer(apiKey, localKey) {
-    return apiGet(apiKey).then(function(serverData) {
-        if (serverData !== null && serverData !== undefined) {
-            try {
-                localStorage.setItem(localKey, JSON.stringify(serverData));
-            } catch (e) {
-                console.error('localStorage write error during sync:', e);
-            }
-            window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: localKey } }));
-        }
-        return serverData;
-    });
-}
+// Setup Realtime Sync
+function setupFirebaseSync() {
+    if (!db) return;
 
-// On page load, sync all data from server to local cache.
-// If server has no products, seed it with initial defaults.
-function initServerSync() {
-    var mappings = [
-        { apiKey: 'products', localKey: STORAGE_KEY },
-        { apiKey: 'users', localKey: USERS_KEY },
-        { apiKey: 'config', localKey: CONFIG_KEY },
-        { apiKey: 'invites', localKey: INVITES_KEY },
-        { apiKey: 'logs', localKey: LOGS_KEY }
-    ];
+    Object.keys(KEY_MAP).forEach(function(localKey) {
+        const apiKey = KEY_MAP[localKey];
+        const ref = db.ref(apiKey);
 
-    mappings.forEach(function(m) {
-        syncFromServer(m.apiKey, m.localKey).then(function(serverData) {
-            // Seed products on server if empty
-            if (m.apiKey === 'products' && (serverData === null || serverData === undefined)) {
-                if (typeof initialProducts !== 'undefined') {
-                    apiPut('products', initialProducts);
+        ref.on('value', function(snapshot) {
+            const val = snapshot.val();
+            if (val !== null && val !== undefined) {
+                // Update local cache from server
+                try {
+                    localStorage.setItem(localKey, JSON.stringify(val));
+                } catch (e) {
+                    console.error('localStorage write error during sync:', e);
                 }
-            }
-            // Seed default admin user on server if empty
-            if (m.apiKey === 'users' && (serverData === null || serverData === undefined)) {
-                var defaultUsers = [{ username: 'admin', password: 'admin' }];
-                apiPut('users', defaultUsers);
+                window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: localKey } }));
+            } else {
+                // Server data is empty. Migration/Seeding logic.
+                const localDataStr = localStorage.getItem(localKey);
+                let migrated = false;
+
+                if (localDataStr) {
+                    try {
+                        const localData = JSON.parse(localDataStr);
+                        // Check if it has content
+                        if ((Array.isArray(localData) && localData.length > 0) ||
+                            (typeof localData === 'object' && Object.keys(localData).length > 0)) {
+                            ref.set(localData);
+                            migrated = true;
+                        }
+                    } catch (e) { }
+                }
+
+                if (!migrated) {
+                    // Seed defaults if no local data to migrate
+                    if (apiKey === 'products' && typeof initialProducts !== 'undefined') {
+                        ref.set(initialProducts);
+                    } else if (apiKey === 'users') {
+                        const defaultUsers = [{ username: 'admin', password: 'admin' }];
+                        ref.set(defaultUsers);
+                    }
+                }
             }
         });
     });
 }
 
-// Start sync on load
-initServerSync();
-
-// Poll server periodically for changes from other admins (every 30s)
-setInterval(function() {
-    var mappings = [
-        { apiKey: 'products', localKey: STORAGE_KEY },
-        { apiKey: 'users', localKey: USERS_KEY },
-        { apiKey: 'config', localKey: CONFIG_KEY }
-    ];
-    mappings.forEach(function(m) {
-        syncFromServer(m.apiKey, m.localKey);
-    });
-}, 30000);
-// ---------------------------
+// Start sync
+setupFirebaseSync();
 
 function getSiteConfig() {
     var storedConfig = localStorage.getItem(CONFIG_KEY);
@@ -146,9 +125,8 @@ function getUsers() {
             console.error("Error parsing users from localStorage, resetting to default.", e);
         }
     }
-    // Default admin user
+    // Default admin user (will be saved to DB by persistData inside saveUsers if DB is connected)
     var defaultUsers = [{ username: 'admin', password: 'admin' }];
-    saveUsers(defaultUsers);
     return defaultUsers;
 }
 
@@ -190,14 +168,7 @@ function getProducts() {
             console.error("Error parsing products", e);
         }
     }
-    // If no products in local cache, use initial ones for display only (save to localStorage only).
-    // Server sync will either overwrite with real data or seed the server if empty.
     if (typeof initialProducts !== 'undefined') {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(initialProducts));
-        } catch (e) {
-            console.error("localStorage write error:", e);
-        }
         return initialProducts;
     }
     return [];
