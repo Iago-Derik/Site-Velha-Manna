@@ -1,6 +1,6 @@
 function sendWhatsAppMessage(itemName, type, customDetails = null, imageUrl = null) {
   const config = (typeof getSiteConfig === 'function') ? getSiteConfig() : {};
-  const phoneNumber = config.whatsappNumber || "5519988404110";
+  const phoneNumber = config.whatsappNumber || "5511970605023";
   let message = "";
 
   if (type === "curso") {
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Update Static WhatsApp Links
-      const whatsappNumber = config.whatsappNumber || "5519988404110";
+      const whatsappNumber = config.whatsappNumber || "5511970605023";
       document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp.com"]').forEach(link => {
           let href = link.href;
           if (href.includes('wa.me/')) {

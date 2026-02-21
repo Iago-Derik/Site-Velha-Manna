@@ -534,7 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // WhatsApp Number
-    document.getElementById("whatsapp-number").value = config.whatsappNumber || "5519988404110";
+    document.getElementById("whatsapp-number").value = config.whatsappNumber || "5511970605023";
   }
 
   // Helper to read file as Data URL
@@ -562,7 +562,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const config = {
         logoUrl: logoUrlValue,
-        whatsappNumber: whatsappNumber || "5519988404110",
+        whatsappNumber: whatsappNumber || "5511970605023",
         // pageBgUrl and banners removed
       };
 
