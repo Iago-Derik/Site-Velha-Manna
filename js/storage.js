@@ -4,16 +4,30 @@ const CONFIG_KEY = 'site_config';
 const INVITES_KEY = 'admin_invites';
 const LOGS_KEY = 'admin_logs';
 
-// Firebase Database Reference
-let db = null;
-if (typeof firebase !== 'undefined' && window.firebaseConfig) {
-    if (!firebase.apps.length) {
-        firebase.initializeApp(window.firebaseConfig);
+// Supabase Client Reference
+let supabaseClient = null;
+
+// Initialization Logic
+async function initSupabase(retries = 5, delay = 1000) {
+    if (typeof window.supabase !== 'undefined' && window.supabase.createClient && window.supabaseConfig) {
+        try {
+            supabaseClient = window.supabase.createClient(window.supabaseConfig.url, window.supabaseConfig.anonKey);
+            console.log('Supabase connected successfully');
+            setupSupabaseSync();
+            return;
+        } catch (error) {
+            console.error('Error initializing Supabase client:', error);
+        }
     }
-    db = firebase.database();
+
+    if (retries > 0) {
+        setTimeout(() => initSupabase(retries - 1, delay * 1.5), delay);
+    } else {
+        console.warn('Failed to load Supabase after retries. Fallback to localStorage activated.');
+    }
 }
 
-// Map localStorage keys to Firebase paths
+// Map localStorage keys to Supabase paths
 const KEY_MAP = {
     [STORAGE_KEY]: 'products',
     [USERS_KEY]: 'users',
@@ -22,73 +36,162 @@ const KEY_MAP = {
     [LOGS_KEY]: 'logs'
 };
 
-// Save to both localStorage (cache) and Firebase (source of truth)
-function persistData(localKey, data) {
+// Initialize
+initSupabase();
+
+// Helper function to safely read from localStorage
+function getLocalData(localKey) {
+    const dataStr = localStorage.getItem(localKey);
+    if (dataStr) {
+        try {
+            return JSON.parse(dataStr);
+        } catch (e) {
+            return null;
+        }
+    }
+    return null;
+}
+
+// Save to both localStorage (cache) and Supabase (source of truth)
+async function persistData(localKey, data) {
     try {
         localStorage.setItem(localKey, JSON.stringify(data));
     } catch (e) {
         console.error('localStorage write error:', e);
     }
 
-    if (db) {
-        const apiKey = KEY_MAP[localKey];
-        if (apiKey) {
-            db.ref(apiKey).set(data).catch(function(e) { console.error('Firebase set error:', e); });
+    if (supabaseClient) {
+        const tableName = KEY_MAP[localKey];
+        if (tableName) {
+            try {
+                // The structure expected is single row with an `id` or specific structure?
+                // The previous code did db.ref(apiKey).set(data) which replaced the entire list at that node.
+                // In Supabase, we should store this as a JSON document in a single row or map it.
+                // Assuming we use a simple key-value structure in the tables to match Firebase's unstructured set:
+                // We will wrap the data in an object with a fixed ID (e.g., id: 1) to replace the whole collection.
+                // Wait, the prompt says: "Substituir operações destrutivas como: delete().neq('id', -1) Por: upsert(data)"
+                // This implies we should `upsert` the array directly if it's an array of items with IDs, or wrap it.
+                // Wait, if data is an array (like products), we can upsert the whole array.
+                // If it's an object (like config), we upsert it. We should make sure they have an 'id'.
+
+                // Let's modify the data to ensure it can be upserted.
+                // If it's a simple key-value table, we might need a generic approach.
+                // Let's check how the tables are structured. The prompt mentions:
+                // "products_data" -> "products", "site_config" -> "config", "admin_invites" -> "invites", "admin_logs" -> "logs"
+                // If they are relational tables, `upsert` takes an array of objects or a single object.
+                // For `config` (which is an object), we should give it a dummy id so it overwrites row 1.
+
+                let upsertData = data;
+
+                if (tableName === 'config' && !Array.isArray(data)) {
+                     upsertData = { id: 1, ...data };
+                } else if (tableName === 'users' && Array.isArray(data)) {
+                     // Ensure users have an ID for upsert, or username is the primary key.
+                     upsertData = data.map(u => ({ ...u, id: u.username })); // Using username as id if no id exists
+                } else if (tableName === 'invites' && Array.isArray(data)) {
+                     upsertData = data.map(i => ({ ...i, id: i.token }));
+                } else if (tableName === 'logs' && Array.isArray(data)) {
+                     upsertData = data.map((l, index) => ({ ...l, id: l.timestamp + index }));
+                } else if (tableName === 'products' && Array.isArray(data)) {
+                     // Products already have an 'id'
+                     upsertData = data;
+                }
+
+                const { error } = await supabaseClient.from(tableName).upsert(upsertData);
+                if (error) {
+                    console.error(`Supabase upsert error for ${tableName}:`, error);
+                } else {
+                    console.log(`Successfully synced ${tableName} to Supabase`);
+                }
+            } catch (error) {
+                console.error(`Supabase set error for ${tableName}:`, error);
+            }
         }
     }
 }
 
 // Setup Realtime Sync
-function setupFirebaseSync() {
-    if (!db) return;
+function setupSupabaseSync() {
+    if (!supabaseClient) return;
 
-    Object.keys(KEY_MAP).forEach(function(localKey) {
-        const apiKey = KEY_MAP[localKey];
-        const ref = db.ref(apiKey);
+    Object.keys(KEY_MAP).forEach(async function(localKey) {
+        const tableName = KEY_MAP[localKey];
 
-        ref.on('value', function(snapshot) {
-            const val = snapshot.val();
-            if (val !== null && val !== undefined) {
-                // Update local cache from server
+        // Initial Fetch
+        try {
+            const { data, error } = await supabaseClient.from(tableName).select('*');
+
+            if (error) {
+                console.error(`Error fetching initial data for ${tableName}:`, error);
+                return;
+            }
+
+            if (data && data.length > 0) {
+                // Determine structure based on table
+                let parsedData = data;
+                if (tableName === 'config') {
+                    // Config is expected to be a single object
+                    parsedData = data[0];
+                    delete parsedData.id; // remove dummy id if needed
+                }
+
                 try {
-                    localStorage.setItem(localKey, JSON.stringify(val));
+                    localStorage.setItem(localKey, JSON.stringify(parsedData));
                 } catch (e) {
                     console.error('localStorage write error during sync:', e);
                 }
                 window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: localKey } }));
             } else {
                 // Server data is empty. Migration/Seeding logic.
-                const localDataStr = localStorage.getItem(localKey);
+                const localData = getLocalData(localKey);
                 let migrated = false;
 
-                if (localDataStr) {
-                    try {
-                        const localData = JSON.parse(localDataStr);
-                        // Check if it has content
-                        if ((Array.isArray(localData) && localData.length > 0) ||
-                            (typeof localData === 'object' && Object.keys(localData).length > 0)) {
-                            ref.set(localData);
-                            migrated = true;
-                        }
-                    } catch (e) { }
+                if (localData) {
+                    if ((Array.isArray(localData) && localData.length > 0) ||
+                        (typeof localData === 'object' && Object.keys(localData).length > 0)) {
+                        await persistData(localKey, localData);
+                        migrated = true;
+                    }
                 }
 
                 if (!migrated) {
                     // Seed defaults if no local data to migrate
-                    if (apiKey === 'products' && typeof initialProducts !== 'undefined') {
-                        ref.set(initialProducts);
-                    } else if (apiKey === 'users') {
+                    if (tableName === 'products' && typeof initialProducts !== 'undefined') {
+                        await persistData(localKey, initialProducts);
+                    } else if (tableName === 'users') {
                         const defaultUsers = [{ username: 'admin', password: 'admin' }];
-                        ref.set(defaultUsers);
+                        await persistData(localKey, defaultUsers);
                     }
                 }
             }
-        });
+        } catch (err) {
+            console.error(`Initial fetch failed for ${tableName}:`, err);
+        }
+
+        // Realtime Subscription
+        supabaseClient
+            .channel(`public:${tableName}`)
+            .on('postgres_changes', { event: '*', schema: 'public', table: tableName }, async (payload) => {
+                console.log(`Change received for ${tableName}:`, payload);
+                // Simple approach: re-fetch the entire table to keep cache consistent and simple
+                // This mimics the Firebase `on('value')` behavior which gives the whole snapshot.
+                const { data, error } = await supabaseClient.from(tableName).select('*');
+                if (!error && data) {
+                    let updatedData = data;
+                    if (tableName === 'config') {
+                        updatedData = data.length > 0 ? data[0] : {};
+                    }
+                    try {
+                        localStorage.setItem(localKey, JSON.stringify(updatedData));
+                        window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key: localKey } }));
+                    } catch (e) {
+                        console.error('localStorage write error during realtime sync:', e);
+                    }
+                }
+            })
+            .subscribe();
     });
 }
-
-// Start sync
-setupFirebaseSync();
 
 function getSiteConfig() {
     var storedConfig = localStorage.getItem(CONFIG_KEY);
