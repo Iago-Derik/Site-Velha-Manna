@@ -116,19 +116,27 @@
         <p style="color: var(--light-text); font-size: 0.9rem;">&copy; 2019 Velha Manna. Feito com carinho.</p>
     </footer>
 
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseConfig = {
+            url: "https://whyeutoykvnzbokhoyoy.supabase.co",
+            anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeWV1dG95a3ZuemJva2hveW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NjAxMDgsImV4cCI6MjA5MDIzNjEwOH0.eQquApKKg_PgRSPV1UOyuUGGLDTMnj_DfI3fIJmvOAc"
+        };
+    </script>
     <script src="js/data.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/script.js"></script>
     
     <!-- Vercel Speed Insights -->
     <script>
-        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+            const script = document.createElement('script');
+            script.defer = true;
+            script.src = '/_vercel/speed-insights/script.js';
+            document.head.appendChild(script);
+        }
     </script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 
 </html>
